@@ -277,15 +277,6 @@
       "description": "",
       "image": "https://picsum.photos/seed/s1781470985087/400/400",
       "category": "depilacion"
-    },
-    {
-      "id": 1781471001479,
-      "name": "Laminado de cejas",
-      "price": 2000,
-      "duration": "60 min",
-      "description": "",
-      "image": "https://picsum.photos/seed/s1781471001479/400/400",
-      "category": "depilacion"
     }
   ],
   "gallery": []
