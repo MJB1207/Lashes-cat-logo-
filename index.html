@@ -52,6 +52,7 @@
     .cat-btn.active { background: white; border-color: var(--accent); color: var(--accent); box-shadow: 0 4px 12px rgba(214, 51, 108, 0.15); }
     .subcat-btn { transition: all 0.2s; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; }
     .subcat-btn.active { background: var(--accent); color: white; }
+    .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -75,29 +76,36 @@
       <!-- Categorías Principales -->
       <div class="flex gap-2 overflow-x-auto pb-3 tabs-scroll mb-2">
         <button onclick="filterMainCategory('pestanas')" class="cat-btn active flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pestanas"><i class="fas fa-eye"></i> Pestañas</button>
+        <button onclick="filterMainCategory('cejas')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="cejas"><i class="fas fa-face-grin-beam"></i> Cejas</button>
         <button onclick="filterMainCategory('manicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="manicura"><i class="fas fa-hand-sparkles"></i> Manicura</button>
-        <button onclick="filterMainCategory('pedicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pedicura"><i class="fas fa-socks"></i> Pedicura</button>
+        <button onclick="filterMainCategory('pedicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pedicura"><i class="fas fa-shoe-prints"></i> Pedicura</button>
         <button onclick="filterMainCategory('faciales')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="faciales"><i class="fas fa-face-smile-beam"></i> Faciales</button>
-        <button onclick="filterMainCategory('depilacion')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="depilacion"><i class="fas fa-wand-magic-sparkles"></i> Depilación</button>
+        <button onclick="filterMainCategory('depilacion')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="depilacion"><i class="fas fa-bandage"></i> Depilación</button>
       </div>
 
       <!-- Subcategorías Pestañas -->
-      <div id="subCatPestanas" class="flex gap-2 mb-4 pl-1">
-        <button onclick="filterSubCategory('pestanas_relleno', 'pestanas')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_relleno">Relleno extensiones</button>
-        <button onclick="filterSubCategory('pestanas_nuevas', 'pestanas')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_nuevas">Extensiones nuevas</button>
+      <div id="subCatPestanas" class="flex gap-2 mb-2 pl-1 tabs-scroll">
+        <button onclick="filterSubCategory('pestanas_relleno', 'pestanas')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="pestanas_relleno">Relleno extensiones</button>
+        <button onclick="filterSubCategory('pestanas_nuevas', 'pestanas')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="pestanas_nuevas">Extensiones nuevas</button>
       </div>
 
       <!-- Subcategorías Manicura -->
       <div id="subCatManicura" class="hidden flex gap-2 mb-2 pl-1 tabs-scroll">
-        <button onclick="filterSubCategory('manicura_naturales', 'manicura')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_naturales">Uñas naturales pintura gel</button>
+        <button onclick="filterSubCategory('manicura_naturales', 'manicura')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_naturales">Uñas naturales gel</button>
         <button onclick="filterSubCategory('manicura_softgel', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_softgel">Uñas Soft Gel</button>
-        <button onclick="filterSubCategory('manicura_extension', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_extension">Extensión Gel construcción</button>
+        <button onclick="filterSubCategory('manicura_extension', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_extension">Ext. Gel construcción</button>
       </div>
 
       <!-- Notas Importantes Manicura -->
-      <div id="notasManicura" class="hidden bg-white/70 border border-sand rounded-xl p-3 mb-4 text-xs text-charcoal space-y-2 shadow-sm">
+      <div id="notasManicura" class="hidden bg-white/70 border border-sand rounded-xl p-3 mb-3 text-xs text-charcoal space-y-2 shadow-sm">
         <p class="flex items-start gap-2"><i class="fas fa-star text-fuchsia mt-0.5"></i> <span>Los efectos y accesorios tendrán un costo de 500 MN. Si desea más de dos se le realizará un paquete más económico.</span></p>
         <p class="flex items-start gap-2"><i class="fas fa-check-double text-fuchsia mt-0.5"></i> <span>Todos los servicios incluyen manicura rusa y el color de su preferencia.</span></p>
+      </div>
+
+      <!-- Ordenar Catálogo -->
+      <div class="flex justify-end gap-2 mb-4">
+        <button onclick="setSort('alpha')" class="sort-btn active text-[11px] px-3 py-1 rounded-full border border-sand bg-white text-drift font-bold transition">A-Z</button>
+        <button onclick="setSort('price')" class="sort-btn text-[11px] px-3 py-1 rounded-full border border-sand bg-white text-drift font-bold transition">Precio $</button>
       </div>
 
       <div id="servicesGrid" class="grid grid-cols-2 gap-3"></div>
@@ -154,10 +162,15 @@
     let currentManicuraSubCat = 'manicura_naturales';
     let activeFilter = 'pestanas_relleno';
     let adminActiveCat = 'pestanas_relleno';
+    
+    // Variables de ordenamiento
+    let homeSortType = 'alpha'; 
+    let adminSortType = 'alpha';
 
     const catNames = { 
       pestanas_relleno: "Pestañas - Relleno", 
       pestanas_nuevas: "Pestañas - Nuevas",
+      cejas: "Cejas",
       manicura_naturales: "Manicura - Uñas naturales gel", 
       manicura_softgel: "Manicura - Soft Gel", 
       manicura_extension: "Manicura - Ext. Gel construcción",
@@ -225,7 +238,6 @@
       currentMainCat = cat;
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
       
-      // Ocultar todo primero
       document.getElementById('subCatPestanas').classList.add('hidden');
       document.getElementById('subCatManicura').classList.add('hidden');
       document.getElementById('notasManicura').classList.add('hidden');
@@ -235,10 +247,10 @@
         activeFilter = currentPestanasSubCat;
       } else if (cat === 'manicura') {
         document.getElementById('subCatManicura').classList.remove('hidden');
-        document.getElementById('notasManicura').classList.remove('hidden'); // Mostrar notas
+        document.getElementById('notasManicura').classList.remove('hidden');
         activeFilter = currentManicuraSubCat;
       } else {
-        activeFilter = cat; // Pedicura, Faciales, Depilacion
+        activeFilter = cat; // Cejas, Pedicura, Faciales, Depilacion
       }
       renderServices();
     }
@@ -255,9 +267,26 @@
       renderServices();
     }
 
+    function setSort(type, origin) {
+      if(origin === 'admin') adminSortType = type;
+      else homeSortType = type;
+      
+      document.querySelectorAll(`.sort-btn-${origin}`).forEach(b => b.classList.toggle('active', b.dataset.sort === type));
+      
+      if(origin === 'admin') renderAdminServices(document.getElementById('adminContent'));
+      else renderServices();
+    }
+
+    function sortArray(arr, type) {
+      if(type === 'price') return arr.slice().sort((a, b) => a.price - b.price);
+      return arr.slice().sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     function renderServices() {
       const g = document.getElementById('servicesGrid');
-      const filtered = storeData.services.filter(s => s.category === activeFilter);
+      let filtered = storeData.services.filter(s => s.category === activeFilter);
+      filtered = sortArray(filtered, homeSortType);
+
       if (filtered.length === 0) {
         g.innerHTML = `<div class="col-span-2 flex flex-col items-center justify-center py-12 text-center"><i class="fas fa-hourglass-half text-4xl text-sand mb-3"></i><h3 class="font-display text-2xl font-bold text-fuchsia mb-2">Muy Pronto</h3><p class="text-drift text-sm">Estamos preparando servicios increíbles para ti en esta categoría.</p></div>`;
         return;
@@ -361,14 +390,22 @@
     async function saveAdminInfo() { storeData.salonName=document.getElementById('ai_name').value; storeData.address=document.getElementById('ai_addr').value; storeData.phone=document.getElementById('ai_phone').value; storeData.heroImage=document.getElementById('ai_img').value; try{await saveData(); renderHome();}catch(e){} }
 
     function renderAdminServices(el) {
-      let tabsHtml = '<div class="flex gap-2 overflow-x-auto pb-2 mb-4 tabs-scroll">';
+      let tabsHtml = '<div class="flex gap-2 overflow-x-auto pb-2 mb-3 tabs-scroll">';
       Object.keys(catNames).forEach(key => {
         const isActive = key === adminActiveCat ? 'bg-pink-900/50 text-pink-400 border-pink-400' : 'bg-adminCard text-gray-300 border-gray-600';
         tabsHtml += `<button onclick="filterAdminServices('${key}')" class="px-3 py-1.5 rounded-lg text-xs font-bold shrink-nowrap border ${isActive} whitespace-nowrap">${catNames[key]}</button>`;
       });
       tabsHtml += '</div>';
 
-      const filtered = storeData.services.filter(s => s.category === adminActiveCat);
+      // Botones de ordenar admin
+      let sortHtml = `<div class="flex justify-end gap-2 mb-4">
+        <button onclick="setSort('alpha', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='alpha' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="alpha">A-Z</button>
+        <button onclick="setSort('price', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='price' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="price">Precio $</button>
+      </div>`;
+
+      let filtered = storeData.services.filter(s => s.category === adminActiveCat);
+      filtered = sortArray(filtered, adminSortType);
+
       let listHtml = '<div class="space-y-3">';
       if (filtered.length === 0) {
         listHtml += '<p class="text-center text-gray-500 text-sm py-4">No hay servicios aquí aún.</p>';
@@ -376,41 +413,70 @@
         filtered.forEach(s => {
           const originalIndex = storeData.services.indexOf(s);
           const descSnippet = s.description ? `<p class="text-gray-400 text-[10px] mt-1 truncate"><i class="fas fa-check-circle mr-1"></i>${s.description}</p>` : '';
-          listHtml += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center"><img src="${s.image}" class="w-16 h-16 rounded-lg object-cover"><div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p>${descSnippet}</div><button onclick="deleteService(${originalIndex})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button></div>`;
+          listHtml += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center">
+            <img src="${s.image}" class="w-16 h-16 rounded-lg object-cover">
+            <div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p>${descSnippet}</div>
+            <div class="flex gap-1">
+              <button onclick="editService(${originalIndex})" class="text-blue-400 text-xs p-2"><i class="fas fa-pen"></i></button>
+              <button onclick="deleteService(${originalIndex})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>`;
         });
       }
       listHtml += '</div>';
       listHtml += `<button onclick="renderServiceForm('${adminActiveCat}')" class="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i> Nuevo en ${catNames[adminActiveCat]}</button>`;
-      el.innerHTML = tabsHtml + listHtml;
+      
+      el.innerHTML = tabsHtml + sortHtml + listHtml;
     }
 
     function filterAdminServices(catId) { adminActiveCat = catId; renderAdminServices(document.getElementById('adminContent')); }
 
-    function renderServiceForm(preselectedCat = 'pestanas_relleno') {
+    function renderServiceForm(preselectedCat = 'pestanas_relleno', editIndex = null) {
+      const s = editIndex !== null ? storeData.services[editIndex] : {};
+      const btnText = editIndex !== null ? 'Actualizar Servicio' : 'Guardar Servicio';
+      
       let optionsHtml = '';
       Object.keys(catNames).forEach(key => {
-        const selected = key === preselectedCat ? 'selected' : '';
+        const selected = key === (s.category || preselectedCat) ? 'selected' : '';
         optionsHtml += `<option value="${key}" ${selected}>${catNames[key]}</option>`;
       });
 
       document.getElementById('adminContent').innerHTML = `
         <button onclick="showAdminPage('services')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button>
-        <h3 class="font-display text-lg font-bold mb-4">Nuevo Servicio</h3>
+        <h3 class="font-display text-lg font-bold mb-4">${editIndex !== null ? 'Editar' : 'Nuevo'} Servicio</h3>
         <div class="space-y-3">
-          <input id="sv_name" placeholder="Nombre del servicio" class="admin-input">
-          <input id="sv_price" type="number" placeholder="Precio" class="admin-input">
-          <input id="sv_dur" placeholder="Duración (Ej: 45 min)" class="admin-input">
+          <input type="hidden" id="sv_editIndex" value="${editIndex !== null ? editIndex : ''}">
+          <input id="sv_name" placeholder="Nombre del servicio" class="admin-input" value="${s.name || ''}">
+          <input id="sv_price" type="number" placeholder="Precio" class="admin-input" value="${s.price || ''}">
+          <input id="sv_dur" placeholder="Duración (Ej: 45 min)" class="admin-input" value="${s.duration || ''}">
           <select id="sv_cat" class="admin-input">${optionsHtml}</select>
-          <textarea id="sv_desc" placeholder="¿Qué incluye? (Ej: Esmalte tradicional, limado, cutícula)" class="admin-input" rows="3"></textarea>
-          <input id="sv_img" placeholder="URL de imagen (GitHub Raw)" class="admin-input">
-          <button onclick="saveService()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button>
+          <textarea id="sv_desc" placeholder="¿Qué incluye? (Ej: Esmalte tradicional, limado, cutícula)" class="admin-input" rows="3">${s.description || ''}</textarea>
+          <input id="sv_img" placeholder="URL de imagen (GitHub Raw)" class="admin-input" value="${s.image || ''}">
+          <button onclick="saveService()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">${btnText}</button>
         </div>`;
     }
 
+    function editService(index) {
+      renderServiceForm(adminActiveCat, index);
+    }
+
     async function saveService() {
+      const editIndex = document.getElementById('sv_editIndex').value;
       const name=document.getElementById('sv_name').value, price=Number(document.getElementById('sv_price').value), duration=document.getElementById('sv_dur').value, category=document.getElementById('sv_cat').value, description=document.getElementById('sv_desc').value.trim(), image=document.getElementById('sv_img').value;
+      
       if(!name||!price) { showToast('Pon nombre y precio', 'error'); return; }
-      storeData.services.push({id:Date.now(), name, price, duration: duration||'60 min', description, image: image||'https://picsum.photos/seed/s'+Date.now()+'/400/400', category});
+      
+      const serviceData = { name, price, duration: duration||'60 min', description, image: image||'https://picsum.photos/seed/s'+Date.now()+'/400/400', category };
+
+      if (editIndex !== "") {
+        // Modo Edición
+        storeData.services[editIndex] = serviceData;
+      } else {
+        // Modo Nuevo
+        serviceData.id = Date.now();
+        storeData.services.push(serviceData);
+      }
+
       adminActiveCat = category;
       try{await saveData(); showAdminPage('services'); renderHome();}catch(e){}
     }
@@ -452,4 +518,4 @@
     document.addEventListener('DOMContentLoaded', () => { initAuth(); initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-  </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </html>
