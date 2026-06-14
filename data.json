@@ -11,6 +11,14 @@
       "duration": "60 min",
       "image": "https://picsum.photos/seed/s1781467863996/400/400",
       "category": "pestanas_relleno"
+    },
+    {
+      "id": 1781467892924,
+      "name": "Volumen Ruso",
+      "price": 4200,
+      "duration": "60 min",
+      "image": "https://picsum.photos/seed/s1781467892924/400/400",
+      "category": "pestanas_relleno"
     }
   ],
   "gallery": []
