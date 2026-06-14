@@ -83,6 +83,14 @@
       "duration": "60 min",
       "image": "https://picsum.photos/seed/s1781468199526/400/400",
       "category": "pestanas_nuevas"
+    },
+    {
+      "id": 1781468216144,
+      "name": "Volumen extremo ",
+      "price": 6000,
+      "duration": "60 min",
+      "image": "https://picsum.photos/seed/s1781468216144/400/400",
+      "category": "pestanas_nuevas"
     }
   ],
   "gallery": []
