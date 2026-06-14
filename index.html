@@ -3,14 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Salón de Belleza</title>
+  <title>Lashes Lashes - Salón de Belleza</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            blush: '#FFF0F5', charcoal: '#1A1A1A', fuchsia: '#D6336C', sand: '#F3E5F5', drift: '#6B7280', admin: '#111827', adminCard: '#1F2937'
+            blush: '#FFF0F5',    // Fondo principal (Rosa muy pálido)
+            charcoal: '#1A1A1A', // Texto y contrastes (Negro elegante)
+            fuchsia: '#D6336C',  // Acentos y botones (Rosa fucsia intenso)
+            sand: '#FCE4EC',     // Bordes y fondos suaves (Rosa claro)
+            drift: '#6B7280',    // Texto secundario (Gris)
+            admin: '#111827', 
+            adminCard: '#1F2937'
           },
           fontFamily: { display: ['Playfair Display', 'serif'], body: ['Lato', 'sans-serif'] }
         }
@@ -27,7 +33,7 @@
     .font-display { font-family: 'Playfair Display', serif; }
     .service-card { transition: transform 0.2s; border-radius: 16px; overflow: hidden; background: #fff; }
     .service-card:active { transform: scale(0.97); }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,240,245,0.97); backdrop-filter: blur(12px); border-top: 1px solid #f3e5f5; z-index: 900; padding-bottom: env(safe-area-inset-bottom, 0px); display: flex; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,240,245,0.97); backdrop-filter: blur(12px); border-top: 1px solid #fce4ec; z-index: 900; padding-bottom: env(safe-area-inset-bottom, 0px); display: flex; }
     .bottom-nav button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #6B7280; transition: color 0.2s; padding: 10px 0; background: none; border: none; cursor: pointer; flex: 1; }
     .bottom-nav button.active { color: #D6336C; font-weight: 700; }
     .bottom-nav button i { font-size: 20px; }
@@ -52,13 +58,14 @@
   </nav>
 
   <main id="screenHome" class="pb-24">
-    <div class="relative h-72 overflow-hidden bg-charcoal">
-      <img id="heroImg" src="" alt="Salón" class="w-full h-full object-cover opacity-70">
-      <div class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/70">
-        <h1 id="salonTitle" class="font-display text-3xl font-900 text-white leading-tight"></h1>
-        <div class="flex items-center gap-2 text-white/90 text-sm mt-2"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
-      </div>
+    <!-- HERO CON LOGO CENTRADO -->
+    <div class="relative overflow-hidden bg-charcoal flex flex-col items-center justify-center p-6 pt-10 pb-8">
+      <!-- Reemplaza el src con tu URL de GitHub Raw cuando la tengas -->
+      <img id="heroLogo" src="https://z-cdn-media.chatglm.cn/files/8beb9a93-35f8-4f66-bade-2c533271e9a2.png?auth_key=1881465977-c10a196efae14199afd20198175b3b3d-0-40f0b0e685e7630b5a630e0599afe9b5" alt="Lashes Lashes Logo" class="w-40 h-40 object-contain rounded-full shadow-lg border-4 border-white/10 mb-4 bg-white/10 p-1">
+      <h1 id="salonTitle" class="font-display text-3xl font-black text-white leading-tight text-center drop-shadow-md"></h1>
+      <div class="flex items-center gap-2 text-white/80 text-sm mt-2 drop-shadow-sm"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
     </div>
+
     <section class="px-4 py-6">
       <h2 class="font-display text-2xl font-bold mb-4">Nuestros Servicios</h2>
       <div id="servicesGrid" class="grid grid-cols-2 gap-3"></div>
@@ -79,7 +86,7 @@
     </div>
   </div>
 
-  <!-- LOGIN SEGURO (Sin pegar token en el código) -->
+  <!-- LOGIN SEGURO -->
   <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><p class="text-sm text-drift">Pega tu Token de GitHub. Se guardará en tu celular de forma segura.</p><input id="loginToken" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="ghp_..."><p id="loginError" class="text-red-500 text-sm hidden">Token incorrecto o sin permisos.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
 
   <div id="adminModal" class="modal-overlay"><div class="modal-box bg-admin text-white flex flex-col shadow-2xl" style="height:100vh;max-height:100vh;border-radius:0;">
@@ -110,6 +117,11 @@
         const res = await fetch(RAW_URL + '?t=' + Date.now());
         if (res.ok) storeData = await res.json();
       } catch(e) { console.error(e); }
+      
+      // Valores por defecto basados en tu logo
+      if (!storeData.salonName) storeData.salonName = 'Lashes Lashes';
+      if (!storeData.address) storeData.address = 'La elegancia comienza por tu mirada';
+      
       if (!storeData.services) storeData.services = [];
       renderHome(); generateTimeSlots();
     }
@@ -145,9 +157,12 @@
     function handleLogout() { localStorage.removeItem('gh_token_lashes'); isLoggedIn=false; initAuth(); closeAllModals(); }
 
     function renderHome() {
-      document.getElementById('salonTitle').textContent = storeData.salonName || 'Salón';
-      document.getElementById('salonAddress').textContent = storeData.address || '';
-      document.getElementById('heroImg').src = storeData.heroImage || 'https://picsum.photos/seed/salon/800/600';
+      document.getElementById('salonTitle').textContent = storeData.salonName || 'Lashes Lashes';
+      document.getElementById('salonAddress').textContent = storeData.address || 'La elegancia comienza por tu mirada';
+      
+      // Si en data.json hay una imagen custom, la pone. Si no, mantiene la que está en el HTML
+      if(storeData.heroImage) document.getElementById('heroLogo').src = storeData.heroImage;
+
       const g = document.getElementById('servicesGrid'); g.innerHTML = '';
       storeData.services.forEach(s => {
         g.innerHTML += `<div class="service-card shadow-md border border-sand/50 flex flex-col"><img src="${s.image}" class="w-full h-36 object-cover"><div class="p-3 flex-grow flex flex-col"><h3 class="font-display text-sm font-bold leading-tight mb-1">${s.name}</h3><p class="text-xs text-drift mb-2"><i class="far fa-clock mr-1"></i>${s.duration || '60 min'}</p><p class="text-sm font-bold mt-auto" style="color:var(--accent)">$${s.price}</p></div><button onclick="addService(${s.id})" class="w-full py-2 text-white text-xs font-bold active:scale-95 transition" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i>Agregar</button></div>`;
@@ -207,7 +222,7 @@
     }
 
     function renderAdminInfo(el) {
-      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">URL Imagen Portada</label><input id="ai_img" value="${storeData.heroImage||''}" class="admin-input"></div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
+      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección / Slogan</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">URL Imagen Logo (GitHub Raw URL)</label><input id="ai_img" value="${storeData.heroImage||''}" class="admin-input"></div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
     }
     async function saveAdminInfo() { storeData.salonName=document.getElementById('ai_name').value; storeData.address=document.getElementById('ai_addr').value; storeData.phone=document.getElementById('ai_phone').value; storeData.heroImage=document.getElementById('ai_img').value; try{await saveData(); renderHome();}catch(e){} }
 
@@ -231,4 +246,4 @@
     document.addEventListener('DOMContentLoaded', () => { initAuth(); initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-                                                                                                                                                                                         </html>
+  </html>
