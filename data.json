@@ -91,6 +91,14 @@
       "duration": "60 min",
       "image": "https://picsum.photos/seed/s1781468100891/400/400",
       "category": "pestanas_relleno"
+    },
+    {
+      "id": 1781468121112,
+      "name": "Pestañas inferiores ",
+      "price": 2000,
+      "duration": "60 min",
+      "image": "https://picsum.photos/seed/s1781468121112/400/400",
+      "category": "pestanas_relleno"
     }
   ],
   "gallery": []
