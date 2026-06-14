@@ -51,7 +51,6 @@
     <button onclick="handleAdminClick()" id="navAdmin"><i class="fas fa-lock"></i><span>Admin</span></button>
   </nav>
 
-  <!-- INICIO -->
   <main id="screenHome" class="pb-24">
     <div class="relative h-72 overflow-hidden bg-charcoal">
       <img id="heroImg" src="" alt="Salón" class="w-full h-full object-cover opacity-70">
@@ -60,39 +59,28 @@
         <div class="flex items-center gap-2 text-white/90 text-sm mt-2"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
       </div>
     </div>
-
     <section class="px-4 py-6">
       <h2 class="font-display text-2xl font-bold mb-4">Nuestros Servicios</h2>
       <div id="servicesGrid" class="grid grid-cols-2 gap-3"></div>
     </section>
   </main>
 
-  <!-- TURNOS -->
   <div id="screenBooking" class="pb-24 px-4 pt-6" style="display:none;">
     <h2 class="font-display text-2xl font-bold mb-4">Reservar Turno</h2>
     <div id="bookingEmpty" class="text-center py-12"><i class="fas fa-calendar-xmark text-4xl text-sand mb-3"></i><p class="text-drift text-sm">No has seleccionado servicios</p></div>
-    
     <div id="bookingList" class="space-y-3 mb-6" style="display:none;"></div>
-
     <div id="bookingForm" class="space-y-3 border-t border-sand pt-4" style="display:none;">
       <div id="bookingTotal" class="text-right font-bold text-xl mb-2"></div>
-      
       <input type="text" id="bookName" placeholder="Tu nombre completo" class="admin-input border-sand bg-white text-charcoal">
       <input type="tel" id="bookPhone" placeholder="Tu teléfono" class="admin-input border-sand bg-white text-charcoal">
       <input type="text" id="bookMunicipality" placeholder="Municipio / Dirección" class="admin-input border-sand bg-white text-charcoal">
-      
-      <select id="bookTime" class="admin-input border-sand bg-white text-charcoal">
-        <option value="">Selecciona el horario</option>
-      </select>
-
+      <select id="bookTime" class="admin-input border-sand bg-white text-charcoal"><option value="">Selecciona el horario</option></select>
       <button onclick="sendBooking()" class="w-full py-3 rounded-xl font-bold text-white text-base bg-green-600 active:scale-95 transition flex items-center justify-center gap-2"><i class="fab fa-whatsapp text-xl"></i> Reservar por WhatsApp</button>
     </div>
   </div>
 
-  <!-- LOGIN ADMIN -->
-  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><input id="loginToken" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="Pega tu Token de GitHub"><p id="loginError" class="text-red-500 text-sm hidden">Token incorrecto.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
+  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><input id="loginPass" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="Contraseña de Admin"><p id="loginError" class="text-red-500 text-sm hidden">Contraseña incorrecta.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
 
-  <!-- PANEL ADMIN -->
   <div id="adminModal" class="modal-overlay"><div class="modal-box bg-admin text-white flex flex-col shadow-2xl" style="height:100vh;max-height:100vh;border-radius:0;">
     <header class="p-4 border-b border-gray-700 flex justify-between items-center shrink-0"><h2 class="font-display text-lg font-bold" style="color:var(--accent)">Admin Salón</h2><button onclick="closeAllModals()" class="text-xl"><i class="fas fa-times"></i></button></header>
     <div class="flex gap-1 p-3 border-b border-gray-700 shrink-0 bg-adminCard/50 overflow-x-auto tabs-scroll">
@@ -106,17 +94,23 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // CONFIGURACIÓN (CAMBIA SOLO EL REPOSITORIO)
+    // ==========================================================
+    // CONFIGURACIÓN DE TU REPOSITORIO Y SEGURIDAD
+    // ==========================================================
     const GITHUB_OWNER = 'ecosdemoda'; 
-    const GITHUB_REPO = 'Salon-Belleza'; // <--- CAMBIA ESTO AL NOMBRE DE TU NUEVO REPO
+    const GITHUB_REPO = 'Lashes-cat-logo-'; // Nombre de tu repo
     const GITHUB_BRANCH = 'main';
     const GITHUB_FILE_PATH = 'data.json';
     const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}`;
     const API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+    
+    // SEGURIDAD: Pon tu contraseña fácil y pega tu Token de GitHub aquí
+    const ADMIN_PASSWORD = 'lashes2024'; // Cambia esta contraseña
+    const GITHUB_TOKEN = 'ghp_AQUI_PEGA_TU_TOKEN'; // Pega tu token ghp_... aquí
 
     let storeData = {}, isLoggedIn = false, bookingCart = [], fileSha = '';
 
-    // Cargar datos (Sin VPN)
+    // Cargar datos (Sin VPN para las clientas)
     async function initApp() {
       try {
         const res = await fetch(RAW_URL + '?t=' + Date.now());
@@ -126,26 +120,33 @@
       renderHome(); generateTimeSlots();
     }
 
+    // Guardar datos (Requiere VPN solo para la dueña)
     async function saveData() {
       try {
-        const token = localStorage.getItem('gh_token'); if(!token) throw new Error("No token");
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(storeData, null, 2))));
-        const currentRes = await fetch(API_URL, { headers: { Authorization: `token ${token}` } });
+        const currentRes = await fetch(API_URL, { headers: { Authorization: `token ${GITHUB_TOKEN}` } });
         if(!currentRes.ok) throw new Error("Error SHA");
         fileSha = (await currentRes.json()).sha;
         const putRes = await fetch(API_URL, {
-          method: 'PUT', headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
+          method: 'PUT', headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: 'Actualizar salón', content, sha: fileSha, branch: GITHUB_BRANCH })
         });
         if(!putRes.ok) throw new Error("Error guardar");
         fileSha = (await putRes.json()).content.sha;
         showToast('¡Guardado en GitHub!', 'success');
-      } catch(e) { showToast('Error al guardar. ¿VPN?', 'error'); throw e; }
+      } catch(e) { showToast('Error al guardar. ¿VPN encendida?', 'error'); throw e; }
     }
 
-    function initAuth() { isLoggedIn = !!localStorage.getItem('gh_token'); document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock'; }
-    async function handleLogin() { const t = document.getElementById('loginToken').value.trim(); if(!t) return; try { const r = await fetch(API_URL, {headers: {Authorization: `token ${t}`}}); if(r.ok){ localStorage.setItem('gh_token', t); isLoggedIn=true; fileSha=(await r.json()).sha; closeAllModals(); openAdmin(); initAuth(); } else document.getElementById('loginError').classList.remove('hidden'); } catch(e) { document.getElementById('loginError').classList.remove('hidden'); }}
-    function handleLogout() { localStorage.removeItem('gh_token'); isLoggedIn=false; initAuth(); closeAllModals(); }
+    // Login con Contraseña Fácil
+    function initAuth() { isLoggedIn = !!localStorage.getItem('salon_logged'); document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock'; }
+    async function handleLogin() { 
+      const pass = document.getElementById('loginPass').value.trim();
+      if (pass === ADMIN_PASSWORD) {
+        localStorage.setItem('salon_logged', 'true'); isLoggedIn = true;
+        closeAllModals(); openAdmin(); initAuth();
+      } else { document.getElementById('loginError').classList.remove('hidden'); }
+    }
+    function handleLogout() { localStorage.removeItem('salon_logged'); isLoggedIn=false; initAuth(); closeAllModals(); showToast('Sesión cerrada', 'info'); }
 
     function renderHome() {
       document.getElementById('salonTitle').textContent = storeData.salonName || 'Salón';
@@ -160,17 +161,13 @@
     function generateTimeSlots() {
       const sel = document.getElementById('bookTime');
       for(let h=9; h<18; h++) {
-        sel.innerHTML += `<option value="${h}:00">${h}:00 AM</option>`;
-        sel.innerHTML += `<option value="${h}:30">${h}:30 AM</option>`;
+        const h12 = h > 12 ? h-12 : h; const ampm = h >= 12 ? 'PM' : 'AM';
+        sel.innerHTML += `<option value="${h}:00">${h12}:00 ${ampm}</option>`;
+        sel.innerHTML += `<option value="${h}:30">${h12}:30 ${ampm}</option>`;
       }
-      sel.innerHTML = sel.innerHTML.replace(/17:00 AM/g, '5:00 PM').replace(/17:30 AM/g, '5:30 PM').replace(/16:00 AM/g, '4:00 PM').replace(/16:30 AM/g, '4:30 PM').replace(/15:00 AM/g, '3:00 PM').replace(/15:30 AM/g, '3:30 PM').replace(/14:00 AM/g, '2:00 PM').replace(/14:30 AM/g, '2:30 PM').replace(/13:00 AM/g, '1:00 PM').replace(/13:30 AM/g, '1:30 PM').replace(/12:00 AM/g, '12:00 PM').replace(/12:30 AM/g, '12:30 PM');
     }
 
-    function addService(id) {
-      const s = storeData.services.find(x => x.id === id); if(!s) return;
-      const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, qty: 1});
-      updateBookingBadge(); showToast('Servicio añadido', 'success');
-    }
+    function addService(id) { const s = storeData.services.find(x => x.id === id); if(!s) return; const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, qty: 1}); updateBookingBadge(); showToast('Servicio añadido', 'success'); }
     function removeService(id) { bookingCart = bookingCart.filter(x => x.id !== id); updateBookingBadge(); renderBooking(); }
     function updateBookingBadge() { const t = bookingCart.reduce((s,i)=>s+i.qty,0); const b = document.getElementById('bookingBadge'); if(t>0){b.textContent=t;b.classList.remove('hidden');}else b.classList.add('hidden'); }
 
@@ -188,12 +185,10 @@
       const muni = document.getElementById('bookMunicipality').value.trim();
       const time = document.getElementById('bookTime').value;
       if(!name || !phone || !muni || !time) { showToast('Completa todos los campos', 'error'); return; }
-
-      let msg = `💅 *Reserva de Turno - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${muni}\n🕒 *Horario:* ${time}\n\n📋 *Servicios:*\n`;
+      let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${muni}\n🕒 *Horario:* ${time}\n\n📋 *Servicios:*\n`;
       let total = 0;
       bookingCart.forEach(i => { const sub = i.price * i.qty; total += sub; msg += `  • ${i.name} x${i.qty} - $${sub}\n`; });
       msg += `\n💰 *Total a pagar: $${total}*`;
-      
       window.open(`https://wa.me/${(storeData.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
       bookingCart = []; updateBookingBadge(); renderBooking(); switchScreen('home');
     }
@@ -244,4 +239,4 @@
     document.addEventListener('DOMContentLoaded', () => { initAuth(); initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-                                  </html>
+</html>
