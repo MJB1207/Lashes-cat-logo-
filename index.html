@@ -25,7 +25,7 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--fg); overflow-x: hidden; max-width: 100vw; }
     .font-display { font-family: 'Playfair Display', serif; }
-    .service-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden; background: #fff; }
+    .service-card { transition: transform 0.2s; border-radius: 16px; overflow: hidden; background: #fff; }
     .service-card:active { transform: scale(0.97); }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,240,245,0.97); backdrop-filter: blur(12px); border-top: 1px solid #f3e5f5; z-index: 900; padding-bottom: env(safe-area-inset-bottom, 0px); display: flex; }
     .bottom-nav button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #6B7280; transition: color 0.2s; padding: 10px 0; background: none; border: none; cursor: pointer; flex: 1; }
@@ -79,7 +79,8 @@
     </div>
   </div>
 
-  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><input id="loginPass" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="Contraseña de Admin"><p id="loginError" class="text-red-500 text-sm hidden">Contraseña incorrecta.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
+  <!-- LOGIN SEGURO (Token en la memoria, no en el código) -->
+  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><p class="text-sm text-drift text-center">Pega tu Token de GitHub. Se guardará en tu celular de forma segura.</p><input id="loginToken" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="ghp_..."><p id="loginError" class="text-red-500 text-sm hidden">Token incorrecto.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
 
   <div id="adminModal" class="modal-overlay"><div class="modal-box bg-admin text-white flex flex-col shadow-2xl" style="height:100vh;max-height:100vh;border-radius:0;">
     <header class="p-4 border-b border-gray-700 flex justify-between items-center shrink-0"><h2 class="font-display text-lg font-bold" style="color:var(--accent)">Admin Salón</h2><button onclick="closeAllModals()" class="text-xl"><i class="fas fa-times"></i></button></header>
@@ -94,59 +95,57 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // ==========================================================
-    // CONFIGURACIÓN DE TU REPOSITORIO Y SEGURIDAD
-    // ==========================================================
+    // CONFIGURACIÓN DE TU REPOSITORIO (IGUAL QUE ECOS DE MODA)
     const GITHUB_OWNER = 'ecosdemoda'; 
-    const GITHUB_REPO = 'Lashes-cat-logo-'; // Nombre de tu repo
+    const GITHUB_REPO = 'Lashes-cat-logo-';
     const GITHUB_BRANCH = 'main';
     const GITHUB_FILE_PATH = 'data.json';
     const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}`;
     const API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
-    
-    // SEGURIDAD: Pon tu contraseña fácil y pega tu Token de GitHub aquí
-    const ADMIN_PASSWORD = 'lashes2024'; // Cambia esta contraseña
-    const GITHUB_TOKEN = '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
 
     let storeData = {}, isLoggedIn = false, bookingCart = [], fileSha = '';
 
-    // Cargar datos (Sin VPN para las clientas)
+    // 1. CARGAR DATOS (DESDE GITHUB RAW - SIN VPN PARA CLIENTAS EN CUBA)
     async function initApp() {
       try {
-        const res = await fetch(RAW_URL + '?t=' + Date.now());
-        if (res.ok) storeData = await res.json();
+        const response = await fetch(RAW_URL + '?t=' + Date.now()); // Cache bypass
+        if (response.ok) storeData = await response.json();
       } catch(e) { console.error(e); }
       if (!storeData.services) storeData.services = [];
       renderHome(); generateTimeSlots();
     }
-
-    // Guardar datos (Requiere VPN solo para la dueña)
-    async function saveData() {
+    
+    // 2. GUARDAR DATOS (DESDE ADMIN CON TOKEN - REQUIERE VPN PARA GUARDAR)
+    async function saveData() { 
       try {
+        const token = localStorage.getItem('gh_token_lashes'); if(!token) throw new Error("No Token");
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(storeData, null, 2))));
-        const currentRes = await fetch(API_URL, { headers: { Authorization: `token ${GITHUB_TOKEN}` } });
-        if(!currentRes.ok) throw new Error("Error SHA");
-        fileSha = (await currentRes.json()).sha;
+        const currentFileRes = await fetch(API_URL, { headers: { Authorization: `token ${token}` } });
+        if (currentRes.status === 401) { showToast('Token incorrecto o sin permisos', 'error'); throw new Error("Bad Token"); }
+        if (currentRes.status === 404) { showToast('Falta crear data.json en GitHub', 'error'); throw new Error("No file"); }
+        if(!currentFileRes.ok) throw new Error("Error SHA");
+        fileSha = (await currentFileRes.json()).sha;
         const putRes = await fetch(API_URL, {
-          method: 'PUT', headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+          method: 'PUT', headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: 'Actualizar salón', content, sha: fileSha, branch: GITHUB_BRANCH })
         });
-        if(!putRes.ok) throw new Error("Error guardar");
+        if(!putRes.ok) throw new Error("Error al guardar en GitHub");
         fileSha = (await putRes.json()).content.sha;
         showToast('¡Guardado en GitHub!', 'success');
-      } catch(e) { showToast('Error al guardar. ¿VPN encendida?', 'error'); throw e; }
+      } catch(e) { showToast('Error al guardar. ¿VPN encendida?', 'error'); throw e; } 
     }
 
-    // Login con Contraseña Fácil
-    function initAuth() { isLoggedIn = !!localStorage.getItem('salon_logged'); document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock'; }
+    // 3. AUTENTICACIÓN
+    function initAuth() { isLoggedIn = !!localStorage.getItem('gh_token_lashes'); document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock'; }
     async function handleLogin() { 
-      const pass = document.getElementById('loginPass').value.trim();
-      if (pass === ADMIN_PASSWORD) {
-        localStorage.setItem('salon_logged', 'true'); isLoggedIn = true;
-        closeAllModals(); openAdmin(); initAuth();
-      } else { document.getElementById('loginError').classList.remove('hidden'); }
+      const t = document.getElementById('loginToken').value.trim(); if(!t) return;
+      try {
+        const r = await fetch(API_URL, {headers: {Authorization: `token ${t}`}});
+        if(r.ok){ localStorage.setItem('gh_token_lashes', t); isLoggedIn = true; fileSha=(await r.json()).sha; closeAllModals(); openAdmin(); initAuth(); }
+        else document.getElementById('loginError').classList.remove('hidden');
+      } catch(e) { document.getElementById('loginError').classList.remove('hidden'); }
     }
-    function handleLogout() { localStorage.removeItem('salon_logged'); isLoggedIn=false; initAuth(); closeAllModals(); showToast('Sesión cerrada', 'info'); }
+    function handleLogout() { localStorage.removeItem('gh_token_lashes'); isLoggedIn=false; initAuth(); closeAllModals(); }
 
     function renderHome() {
       document.getElementById('salonTitle').textContent = storeData.salonName || 'Salón';
@@ -158,14 +157,7 @@
       });
     }
 
-    function generateTimeSlots() {
-      const sel = document.getElementById('bookTime');
-      for(let h=9; h<18; h++) {
-        const h12 = h > 12 ? h-12 : h; const ampm = h >= 12 ? 'PM' : 'AM';
-        sel.innerHTML += `<option value="${h}:00">${h12}:00 ${ampm}</option>`;
-        sel.innerHTML += `<option value="${h}:30">${h12}:30 ${ampm}</option>`;
-      }
-    }
+    function generateTimeSlots() { const sel = document.getElementById('bookTime'); for(let h=9;h<18;h++){const h12=h>12?h-12:h;const ap=h>=12?'PM':'AM';sel.innerHTML+=`<option value="${h}:00">${h12}:00 ${ap}</option>`;sel.innerHTML+=`<option value="${h}:30">${h12}:30 ${ap}</option>`;} }
 
     function addService(id) { const s = storeData.services.find(x => x.id === id); if(!s) return; const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, qty: 1}); updateBookingBadge(); showToast('Servicio añadido', 'success'); }
     function removeService(id) { bookingCart = bookingCart.filter(x => x.id !== id); updateBookingBadge(); renderBooking(); }
@@ -175,68 +167,9 @@
       const list = document.getElementById('bookingList'), form = document.getElementById('bookingForm'), empty = document.getElementById('bookingEmpty');
       if(bookingCart.length===0){ list.style.display='none'; form.style.display='none'; empty.style.display='block'; return; }
       empty.style.display='none'; list.style.display='block'; form.style.display='block'; list.innerHTML=''; let total=0;
-      bookingCart.forEach(i => { total+=i.price*i.qty; list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm"><div><h4 class="font-bold text-sm">${i.name}</h4><p class="text-xs" style="color:var(--accent)">$${i.price} x ${i.qty}</p></div><div class="flex items-center gap-2"><button onclick="removeService(${i.id})" class="text-red-400"><i class="fas fa-trash text-xs"></i></button></div></div>`; });
-      document.getElementById('bookingTotal').innerHTML = `<span class="text-drift text-sm">Total a pagar:</span> <span style="color:var(--accent)">$${total}</span>`;
+      bookingCart.forEach(i => { total+=i.price*i.qty; list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm"><div><h4 class="font-bold text-sm">${i.name}</h4><p class="text-xs" style="color:var(--accent)">$${i.price} x ${i.qty}</p></div><div><button onclick="removeService(${i.id})" class="text-red-400"><i class="fas fa-trash text-xs"></i></button></div></div>`; });
+      document.getElementById('bookingTotal').innerHTML = `<span class="text-drift text-sm">Total:</span> <span style="color:var(--accent)">$${total}</span>`;
     }
 
     function sendBooking() {
-      const name = document.getElementById('bookName').value.trim();
-      const phone = document.getElementById('bookPhone').value.trim();
-      const muni = document.getElementById('bookMunicipality').value.trim();
-      const time = document.getElementById('bookTime').value;
-      if(!name || !phone || !muni || !time) { showToast('Completa todos los campos', 'error'); return; }
-      let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${muni}\n🕒 *Horario:* ${time}\n\n📋 *Servicios:*\n`;
-      let total = 0;
-      bookingCart.forEach(i => { const sub = i.price * i.qty; total += sub; msg += `  • ${i.name} x${i.qty} - $${sub}\n`; });
-      msg += `\n💰 *Total a pagar: $${total}*`;
-      window.open(`https://wa.me/${(storeData.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
-      bookingCart = []; updateBookingBadge(); renderBooking(); switchScreen('home');
-    }
-
-    function switchScreen(s) {
-      document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
-      document.getElementById('screenHome').style.display = s==='home'?'block':'none';
-      document.getElementById('screenBooking').style.display = s==='booking'?'block':'none';
-      if(s==='home') document.getElementById('navHome').classList.add('active');
-      if(s==='booking'){ document.getElementById('navBooking').classList.add('active'); renderBooking(); }
-    }
-
-    function handleAdminClick() { isLoggedIn ? openAdmin() : openModal('loginModal'); }
-    function openAdmin() { openModal('adminModal'); showAdminPage('info'); }
-    function openModal(id) { document.getElementById(id).classList.add('visible'); }
-    function closeAllModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('visible')); }
-    let toastTimer; function showToast(m, t) { const e=document.getElementById('toast'); e.textContent=m; e.className='toast '+t; clearTimeout(toastTimer); setTimeout(()=>e.classList.add('show'),10); toastTimer=setTimeout(()=>e.classList.remove('show'),2500); }
-
-    // ADMIN PANEL
-    function showAdminPage(pg) {
-      document.querySelectorAll('.admin-tab').forEach(b => { b.classList.toggle('bg-pink-900/30', b.dataset.page===pg); b.classList.toggle('text-pink-400', b.dataset.page===pg); b.classList.toggle('text-gray-300', b.dataset.page!==pg); });
-      const c = document.getElementById('adminContent');
-      if(pg==='info') renderAdminInfo(c); else if(pg==='services') renderAdminServices(c);
-    }
-
-    function renderAdminInfo(el) {
-      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">URL Imagen Portada</label><input id="ai_img" value="${storeData.heroImage||''}" class="admin-input"></div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
-    }
-    async function saveAdminInfo() { storeData.salonName=document.getElementById('ai_name').value; storeData.address=document.getElementById('ai_addr').value; storeData.phone=document.getElementById('ai_phone').value; storeData.heroImage=document.getElementById('ai_img').value; try{await saveData(); renderHome();}catch(e){} }
-
-    function renderAdminServices(el) {
-      let h = '<div class="space-y-3">';
-      storeData.services.forEach((s,i) => { h += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3"><img src="${s.image}" class="w-16 h-16 rounded-lg object-cover"><div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p></div><button onclick="deleteService(${i})" class="text-red-400 text-xs"><i class="fas fa-trash"></i></button></div>`; });
-      h += `</div><button onclick="renderServiceForm()" class="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i> Nuevo Servicio</button>`;
-      el.innerHTML = h;
-    }
-    function renderServiceForm() {
-      document.getElementById('adminContent').innerHTML = `<button onclick="showAdminPage('services')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button><h3 class="font-display text-lg font-bold mb-4">Nuevo Servicio</h3><div class="space-y-3"><input id="sv_name" placeholder="Nombre" class="admin-input"><input id="sv_price" type="number" placeholder="Precio" class="admin-input"><input id="sv_dur" placeholder="Duración (Ej: 45 min)" class="admin-input"><input id="sv_img" placeholder="URL de imagen (GitHub Raw)" class="admin-input"><button onclick="saveService()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
-    }
-    async function saveService() {
-      const name=document.getElementById('sv_name').value, price=Number(document.getElementById('sv_price').value), duration=document.getElementById('sv_dur').value, image=document.getElementById('sv_img').value;
-      if(!name||!price) { showToast('Pon nombre y precio', 'error'); return; }
-      storeData.services.push({id:Date.now(), name, price, duration: duration||'60 min', image: image||'https://picsum.photos/seed/s'+Date.now()+'/400/400'});
-      try{await saveData(); showAdminPage('services'); renderHome();}catch(e){}
-    }
-    async function deleteService(index) { if(!confirm('¿Eliminar?')) return; storeData.services.splice(index,1); try{await saveData(); showAdminPage('services'); renderHome();}catch(e){} }
-
-    document.addEventListener('DOMContentLoaded', () => { initAuth(); initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
-  </script>
-</body>
-</html>
+      const name = document.getElementById('bookName').value
