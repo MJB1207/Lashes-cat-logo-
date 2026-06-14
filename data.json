@@ -250,6 +250,15 @@
       "description": "Pedicura básica.\nExfoliación pies y media pierna.\nMasaje.",
       "image": "https://picsum.photos/seed/s1781470858526/400/400",
       "category": "pedicura"
+    },
+    {
+      "id": 1781470926279,
+      "name": "Pedicura Reconstructiva ",
+      "price": 2000,
+      "duration": "60 min",
+      "description": "Pedicura básica. \nConstrucción y alargamiento de uñas con base Rubber o gel de construcción.",
+      "image": "https://picsum.photos/seed/s1781470926279/400/400",
+      "category": "pedicura"
     }
   ],
   "gallery": []
