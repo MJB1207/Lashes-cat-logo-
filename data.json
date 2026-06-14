@@ -304,6 +304,15 @@
       "description": "",
       "image": "https://picsum.photos/seed/s1781471084267/400/400",
       "category": "depilacion"
+    },
+    {
+      "id": 1781471107534,
+      "name": "Depilación que de mejillas",
+      "price": 1000,
+      "duration": "60 min",
+      "description": "",
+      "image": "https://picsum.photos/seed/s1781471107534/400/400",
+      "category": "depilacion"
     }
   ],
   "gallery": []
