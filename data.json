@@ -241,6 +241,15 @@
       "description": "Limpieza y ablandamiento con sales y gel limpiador.\nExtracción de células muertas y callosidades. \nPedicura rusa.\nDecoración con pintura de gel.",
       "image": "https://picsum.photos/seed/s1781470805903/400/400",
       "category": "pedicura"
+    },
+    {
+      "id": 1781470858526,
+      "name": "Pedicura con exfoliación ",
+      "price": 2500,
+      "duration": "60 min",
+      "description": "Pedicura básica.\nExfoliación pies y media pierna.\nMasaje.",
+      "image": "https://picsum.photos/seed/s1781470858526/400/400",
+      "category": "pedicura"
     }
   ],
   "gallery": []
