@@ -223,6 +223,15 @@
       "description": "",
       "image": "https://picsum.photos/seed/s1781470552877/400/400",
       "category": "manicura_extension"
+    },
+    {
+      "id": 1781470570148,
+      "name": "Extensión de uñas largas ",
+      "price": 3000,
+      "duration": "60 min",
+      "description": "",
+      "image": "https://picsum.photos/seed/s1781470570148/400/400",
+      "category": "manicura_extension"
     }
   ],
   "gallery": []
