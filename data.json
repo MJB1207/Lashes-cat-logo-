@@ -160,6 +160,15 @@
       "description": "",
       "image": "https://picsum.photos/seed/s1781470392907/400/400",
       "category": "manicura_naturales"
+    },
+    {
+      "id": 1781470401704,
+      "name": "Largas",
+      "price": 2000,
+      "duration": "60 min",
+      "description": "",
+      "image": "https://picsum.photos/seed/s1781470401704/400/400",
+      "category": "manicura_naturales"
     }
   ],
   "gallery": []
