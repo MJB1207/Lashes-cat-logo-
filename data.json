@@ -259,6 +259,15 @@
       "description": "Pedicura básica. \nConstrucción y alargamiento de uñas con base Rubber o gel de construcción.",
       "image": "https://picsum.photos/seed/s1781470926279/400/400",
       "category": "pedicura"
+    },
+    {
+      "id": 1781470966484,
+      "name": "Diseño y depilación de cejas",
+      "price": 500,
+      "duration": "60 min",
+      "description": "",
+      "image": "https://picsum.photos/seed/s1781470966484/400/400",
+      "category": "depilacion"
     }
   ],
   "gallery": []
