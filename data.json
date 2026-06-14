@@ -19,6 +19,14 @@
       "duration": "60 min",
       "image": "https://picsum.photos/seed/s1781467925436/400/400",
       "category": "pestanas_relleno"
+    },
+    {
+      "id": 1781467942705,
+      "name": "Mega Volumen ",
+      "price": 4500,
+      "duration": "60 min",
+      "image": "https://picsum.photos/seed/s1781467942705/400/400",
+      "category": "pestanas_relleno"
     }
   ],
   "gallery": []
