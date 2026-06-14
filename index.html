@@ -71,16 +71,35 @@
 
     <section class="px-4 py-6">
       <h2 class="font-display text-2xl font-bold mb-4">Servicios</h2>
+      
+      <!-- Categorías Principales -->
       <div class="flex gap-2 overflow-x-auto pb-3 tabs-scroll mb-2">
         <button onclick="filterMainCategory('pestanas')" class="cat-btn active flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pestanas"><i class="fas fa-eye"></i> Pestañas</button>
-        <button onclick="filterMainCategory('manicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="manicura"><i class="fas fa-hand-sparkles"></i> Manicura y Pedicura</button>
-        <button onclick="filterMainCategory('faciales')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="faciales"><i class="fas fa-face-smile-beam"></i> Trat. Faciales</button>
+        <button onclick="filterMainCategory('manicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="manicura"><i class="fas fa-hand-sparkles"></i> Manicura</button>
+        <button onclick="filterMainCategory('pedicura')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pedicura"><i class="fas fa-socks"></i> Pedicura</button>
+        <button onclick="filterMainCategory('faciales')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="faciales"><i class="fas fa-face-smile-beam"></i> Faciales</button>
         <button onclick="filterMainCategory('depilacion')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="depilacion"><i class="fas fa-wand-magic-sparkles"></i> Depilación</button>
       </div>
+
+      <!-- Subcategorías Pestañas -->
       <div id="subCatPestanas" class="flex gap-2 mb-4 pl-1">
-        <button onclick="filterSubCategory('pestanas_relleno')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_relleno">Relleno de extensiones</button>
-        <button onclick="filterSubCategory('pestanas_nuevas')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_nuevas">Extensiones nuevas</button>
+        <button onclick="filterSubCategory('pestanas_relleno', 'pestanas')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_relleno">Relleno extensiones</button>
+        <button onclick="filterSubCategory('pestanas_nuevas', 'pestanas')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0" data-subcat="pestanas_nuevas">Extensiones nuevas</button>
       </div>
+
+      <!-- Subcategorías Manicura -->
+      <div id="subCatManicura" class="hidden flex gap-2 mb-2 pl-1 tabs-scroll">
+        <button onclick="filterSubCategory('manicura_naturales', 'manicura')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_naturales">Uñas naturales pintura gel</button>
+        <button onclick="filterSubCategory('manicura_softgel', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_softgel">Uñas Soft Gel</button>
+        <button onclick="filterSubCategory('manicura_extension', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_extension">Extensión Gel construcción</button>
+      </div>
+
+      <!-- Notas Importantes Manicura -->
+      <div id="notasManicura" class="hidden bg-white/70 border border-sand rounded-xl p-3 mb-4 text-xs text-charcoal space-y-2 shadow-sm">
+        <p class="flex items-start gap-2"><i class="fas fa-star text-fuchsia mt-0.5"></i> <span>Los efectos y accesorios tendrán un costo de 500 MN. Si desea más de dos se le realizará un paquete más económico.</span></p>
+        <p class="flex items-start gap-2"><i class="fas fa-check-double text-fuchsia mt-0.5"></i> <span>Todos los servicios incluyen manicura rusa y el color de su preferencia.</span></p>
+      </div>
+
       <div id="servicesGrid" class="grid grid-cols-2 gap-3"></div>
     </section>
 
@@ -131,14 +150,18 @@
     let storeData = {}, isLoggedIn = false, bookingCart = [], fileSha = '';
     
     let currentMainCat = 'pestanas';
-    let currentSubCat = 'pestanas_relleno'; 
+    let currentPestanasSubCat = 'pestanas_relleno'; 
+    let currentManicuraSubCat = 'manicura_naturales';
     let activeFilter = 'pestanas_relleno';
     let adminActiveCat = 'pestanas_relleno';
 
     const catNames = { 
       pestanas_relleno: "Pestañas - Relleno", 
-      pestanas_nuevas: "Pestañas - Nuevas", 
-      manicura: "Manicura y Pedicura", 
+      pestanas_nuevas: "Pestañas - Nuevas",
+      manicura_naturales: "Manicura - Uñas naturales gel", 
+      manicura_softgel: "Manicura - Soft Gel", 
+      manicura_extension: "Manicura - Ext. Gel construcción",
+      pedicura: "Pedicura", 
       faciales: "Trat. Faciales", 
       depilacion: "Depilación" 
     };
@@ -201,15 +224,34 @@
     function filterMainCategory(cat) {
       currentMainCat = cat;
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-      const subCatDiv = document.getElementById('subCatPestanas');
-      if (cat === 'pestanas') { subCatDiv.classList.remove('hidden'); activeFilter = currentSubCat; } 
-      else { subCatDiv.classList.add('hidden'); activeFilter = cat; }
+      
+      // Ocultar todo primero
+      document.getElementById('subCatPestanas').classList.add('hidden');
+      document.getElementById('subCatManicura').classList.add('hidden');
+      document.getElementById('notasManicura').classList.add('hidden');
+
+      if (cat === 'pestanas') {
+        document.getElementById('subCatPestanas').classList.remove('hidden');
+        activeFilter = currentPestanasSubCat;
+      } else if (cat === 'manicura') {
+        document.getElementById('subCatManicura').classList.remove('hidden');
+        document.getElementById('notasManicura').classList.remove('hidden'); // Mostrar notas
+        activeFilter = currentManicuraSubCat;
+      } else {
+        activeFilter = cat; // Pedicura, Faciales, Depilacion
+      }
       renderServices();
     }
 
-    function filterSubCategory(subCat) {
-      currentSubCat = subCat; activeFilter = subCat;
-      document.querySelectorAll('.subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat));
+    function filterSubCategory(subCat, type) {
+      if(type === 'pestanas') {
+        currentPestanasSubCat = subCat;
+        document.querySelectorAll('#subCatPestanas .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat));
+      } else if(type === 'manicura') {
+        currentManicuraSubCat = subCat;
+        document.querySelectorAll('#subCatManicura .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat));
+      }
+      activeFilter = subCat;
       renderServices();
     }
 
@@ -222,9 +264,7 @@
       }
       g.innerHTML = '';
       filtered.forEach(s => {
-        // Creamos la nota si existe
         const descHtml = s.description ? `<p class="text-[11px] text-gray-500 mb-2 leading-tight"><i class="fas fa-check-circle text-fuchsia mr-1"></i>${s.description}</p>` : '';
-        
         g.innerHTML += `
         <div class="service-card shadow-md border border-sand/50 flex flex-col">
           <img src="${s.image}" class="w-full h-36 object-cover">
@@ -259,7 +299,6 @@
       if(!s) return; 
       const e = bookingCart.find(x => x.id === id); 
       if(e) e.qty++; 
-      // Guardamos también la descripción en el carrito para enviarla por WhatsApp
       else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, qty: 1}); 
       updateBookingBadge(); showToast('Servicio añadido', 'success'); 
     }
@@ -287,7 +326,6 @@
       bookingCart.forEach(i => { 
         const sub = i.price * i.qty; total += sub; 
         msg += `  • ${i.name} x${i.qty} - $${sub}\n`; 
-        // Agregar la nota al mensaje de WhatsApp si existe
         if(i.description) msg += `    ✔️ _${i.description}_\n`; 
       });
       msg += `\n💰 *Total: $${total}*`;
@@ -337,7 +375,6 @@
       } else {
         filtered.forEach(s => {
           const originalIndex = storeData.services.indexOf(s);
-          // Mostrar snippet de la descripción en el admin
           const descSnippet = s.description ? `<p class="text-gray-400 text-[10px] mt-1 truncate"><i class="fas fa-check-circle mr-1"></i>${s.description}</p>` : '';
           listHtml += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center"><img src="${s.image}" class="w-16 h-16 rounded-lg object-cover"><div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p>${descSnippet}</div><button onclick="deleteService(${originalIndex})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button></div>`;
         });
