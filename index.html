@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lashes Lashes - Salón de Belleza</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -65,7 +66,7 @@
 
   <main id="screenHome" class="pb-24">
     <div class="relative overflow-hidden bg-charcoal flex flex-col items-center justify-center p-6 pt-10 pb-8">
-      <img id="heroLogo" src="https://raw.githubusercontent.com/ecosdemoda/Lashes-cat-logo-/main/Logo%20lashes.png" alt="Lashes Lashes Logo" class="w-36 h-36 object-contain rounded-full shadow-lg border-4 border-white/10 mb-4 bg-white/10 p-1">
+      <img id="heroLogo" src="" alt="Lashes Lashes Logo" class="w-36 h-36 object-contain rounded-full shadow-lg border-4 border-white/10 mb-4 bg-white/10 p-1">
       <h1 id="salonTitle" class="font-display text-3xl font-black text-white leading-tight text-center drop-shadow-md"></h1>
       <div class="flex items-center gap-2 text-white/80 text-sm mt-2 drop-shadow-sm"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
     </div>
@@ -73,7 +74,6 @@
     <section class="px-4 py-6">
       <h2 class="font-display text-2xl font-bold mb-4">Servicios</h2>
       
-      <!-- Categorías Principales -->
       <div class="flex gap-2 overflow-x-auto pb-3 tabs-scroll mb-2">
         <button onclick="filterMainCategory('pestanas')" class="cat-btn active flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="pestanas"><i class="fas fa-eye"></i> Pestañas</button>
         <button onclick="filterMainCategory('cejas')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="cejas"><i class="fas fa-face-grin-beam"></i> Cejas</button>
@@ -83,26 +83,22 @@
         <button onclick="filterMainCategory('depilacion')" class="cat-btn flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-sand text-charcoal shrink-0" data-cat="depilacion"><i class="fas fa-bandage"></i> Depilación</button>
       </div>
 
-      <!-- Subcategorías Pestañas -->
       <div id="subCatPestanas" class="flex gap-2 mb-2 pl-1 tabs-scroll">
         <button onclick="filterSubCategory('pestanas_relleno', 'pestanas')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="pestanas_relleno">Relleno extensiones</button>
         <button onclick="filterSubCategory('pestanas_nuevas', 'pestanas')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="pestanas_nuevas">Extensiones nuevas</button>
       </div>
 
-      <!-- Subcategorías Manicura -->
       <div id="subCatManicura" class="hidden flex gap-2 mb-2 pl-1 tabs-scroll">
         <button onclick="filterSubCategory('manicura_naturales', 'manicura')" class="subcat-btn active px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_naturales">Uñas naturales gel</button>
         <button onclick="filterSubCategory('manicura_softgel', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_softgel">Uñas Soft Gel</button>
         <button onclick="filterSubCategory('manicura_extension', 'manicura')" class="subcat-btn px-3 py-1.5 rounded-full text-xs font-bold shrink-0 whitespace-nowrap" data-subcat="manicura_extension">Ext. Gel construcción</button>
       </div>
 
-      <!-- Notas Importantes Manicura -->
       <div id="notasManicura" class="hidden bg-white/70 border border-sand rounded-xl p-3 mb-3 text-xs text-charcoal space-y-2 shadow-sm">
         <p class="flex items-start gap-2"><i class="fas fa-star text-fuchsia mt-0.5"></i> <span>Los efectos y accesorios tendrán un costo de 500 MN. Si desea más de dos se le realizará un paquete más económico.</span></p>
         <p class="flex items-start gap-2"><i class="fas fa-check-double text-fuchsia mt-0.5"></i> <span>Todos los servicios incluyen manicura rusa y el color de su preferencia.</span></p>
       </div>
 
-      <!-- Ordenar Catálogo -->
       <div class="flex justify-end gap-2 mb-4">
         <button onclick="setSort('alpha')" class="sort-btn active text-[11px] px-3 py-1 rounded-full border border-sand bg-white text-drift font-bold transition">A-Z</button>
         <button onclick="setSort('price')" class="sort-btn text-[11px] px-3 py-1 rounded-full border border-sand bg-white text-drift font-bold transition">Precio $</button>
@@ -132,7 +128,7 @@
     </div>
   </div>
 
-  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><input id="loginToken" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="Tu Token de GitHub (ghp_...)"><p id="loginError" class="text-red-500 text-sm hidden">Token incorrecto o sin permisos.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
+  <div id="loginModal" class="modal-overlay"><div class="modal-box p-8 shadow-2xl"><h3 class="font-display text-xl font-bold mb-4 text-center">Acceso Admin</h3><div class="space-y-4"><input id="loginEmail" type="email" class="admin-input border-sand bg-white text-charcoal" placeholder="Tu email"><input id="loginPass" type="password" class="admin-input border-sand bg-white text-charcoal" placeholder="Tu contraseña"><p id="loginError" class="text-red-500 text-sm hidden">Credenciales incorrectas.</p><button type="button" onclick="handleLogin()" class="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition" style="background:var(--accent)">Entrar</button><button type="button" onclick="closeAllModals()" class="w-full py-3 rounded-xl font-bold text-drift border border-sand">Cancelar</button></div></div></div>
 
   <div id="adminModal" class="modal-overlay"><div class="modal-box bg-admin text-white flex flex-col shadow-2xl" style="height:100vh;max-height:100vh;border-radius:0;">
     <header class="p-4 border-b border-gray-700 flex justify-between items-center shrink-0"><h2 class="font-display text-lg font-bold" style="color:var(--accent)">Admin Salón</h2><button onclick="closeAllModals()" class="text-xl"><i class="fas fa-times"></i></button></header>
@@ -148,163 +144,142 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    const GITHUB_OWNER = 'ecosdemoda'; 
-    const GITHUB_REPO = 'Lashes-cat-logo-';
-    const GITHUB_BRANCH = 'main';
-    const GITHUB_FILE_PATH = 'data.json';
-    const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}`;
-    const API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+    // ============== CONFIGURACIÓN SUPABASE ==============
+    const SUPABASE_URL = 'https://ffomjyaiuingmdysutrw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmb21qeWFpdWluZ21keXN1dHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NjMyMDYsImV4cCI6MjA5NzAzOTIwNn0.itXgviHivbFUiocrAqJSyhFgufqJcvPIJratJIQM4nA';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ====================================================
 
-    let storeData = {}, isLoggedIn = false, bookingCart = [], fileSha = '';
+    let storeData = { salonName: '', address: '', phone: '', services: [], gallery: [] };
+    let isLoggedIn = false, bookingCart = [];
     
     let currentMainCat = 'pestanas';
     let currentPestanasSubCat = 'pestanas_relleno'; 
     let currentManicuraSubCat = 'manicura_naturales';
     let activeFilter = 'pestanas_relleno';
     let adminActiveCat = 'pestanas_relleno';
-    
-    // Variables de ordenamiento
     let homeSortType = 'alpha'; 
     let adminSortType = 'alpha';
 
     const catNames = { 
-      pestanas_relleno: "Pestañas - Relleno", 
-      pestanas_nuevas: "Pestañas - Nuevas",
-      cejas: "Cejas",
-      manicura_naturales: "Manicura - Uñas naturales gel", 
-      manicura_softgel: "Manicura - Soft Gel", 
-      manicura_extension: "Manicura - Ext. Gel construcción",
-      pedicura: "Pedicura", 
-      faciales: "Trat. Faciales", 
-      depilacion: "Depilación" 
+      pestanas_relleno: "Pestañas - Relleno", pestanas_nuevas: "Pestañas - Nuevas", cejas: "Cejas",
+      manicura_naturales: "Manicura - Uñas naturales gel", manicura_softgel: "Manicura - Soft Gel", manicura_extension: "Manicura - Ext. Gel construcción",
+      pedicura: "Pedicura", faciales: "Trat. Faciales", depilacion: "Depilación" 
     };
 
+    // ============== INICIALIZACIÓN ==============
     async function initApp() {
+      checkAuth();
+      await fetchStoreData();
+      renderHome(); 
+      generateTimeSlots(); 
+      renderGallery();
+    }
+
+    async function fetchStoreData() {
       try {
-        const res = await fetch(RAW_URL + '?t=' + Date.now());
-        if (res.ok) { const text = await res.text(); if(text) storeData = JSON.parse(text); }
+        const { data: info } = await supabase.from('salon_info').select('*').eq('id', 1).single();
+        if(info) { storeData.salonName = info.name; storeData.address = info.address; storeData.phone = info.phone; storeData.logo_url = info.logo_url; }
+        
+        const { data: servs } = await supabase.from('services').select('*').order('name', { ascending: true });
+        if(servs) storeData.services = servs;
+
+        const { data: gals } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+        if(gals) storeData.gallery = gals;
       } catch(e) { console.error(e); }
+    }
+
+    // ============== SUBIDA DE IMÁGENES ==============
+    async function uploadImage(file) {
+      if(!file) return null;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `productos/${fileName}`;
       
-      if (Object.keys(storeData).length === 0) {
-        const cache = localStorage.getItem('lashes_store_cache');
-        if (cache) try { storeData = JSON.parse(cache); } catch(e) {}
-      }
-      if (!storeData.salonName) storeData.salonName = 'Lashes Lashes';
-      if (!storeData.address) storeData.address = 'La elegancia comienza por tu mirada';
-      if (!storeData.services) storeData.services = [];
-      if (!storeData.gallery) storeData.gallery = [];
+      const { data, error } = await supabase.storage.from('imagenes').upload(filePath, file, { cacheControl: '3600', upsert: false });
+      if (error) { showToast('Error subiendo imagen', 'error'); console.error(error); return null; }
       
-      renderHome(); generateTimeSlots(); renderGallery();
+      const { data: publicUrlData } = supabase.storage.from('imagenes').getPublicUrl(filePath);
+      return publicUrlData.publicUrl;
     }
 
-    async function saveData() {
+    async function deleteImage(url) {
+      if(!url) return;
       try {
-        const token = localStorage.getItem('gh_token_lashes'); if(!token) throw new Error("No Token");
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(storeData, null, 2))));
-        const currentRes = await fetch(API_URL, { headers: { Authorization: `token ${token}` } });
-        let sha = '';
-        if (currentRes.status === 401) { showToast('Token sin permisos', 'error'); throw new Error("Bad Token"); }
-        if (currentRes.ok) { sha = (await currentRes.json()).sha; } 
-        const putRes = await fetch(API_URL, {
-          method: 'PUT', headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'Actualizar salón', content, sha: sha, branch: GITHUB_BRANCH })
-        });
-        if(!putRes.ok) throw new Error("Error guardar");
-        fileSha = (await putRes.json()).content.sha;
-        localStorage.setItem('lashes_store_cache', JSON.stringify(storeData));
-        showToast('¡Guardado con éxito!', 'success');
-      } catch(e) { showToast('Error al guardar en GitHub', 'error'); }
+        const parts = url.split('/imagenes/');
+        if(parts.length > 1) {
+          const filePath = parts[1].split('?')[0]; // Limpiar parámetros de URL si los hay
+          await supabase.storage.from('imagenes').remove([decodeURIComponent(filePath)]);
+        }
+      } catch(e) { console.error(e); }
     }
 
-    function initAuth() { isLoggedIn = !!localStorage.getItem('gh_token_lashes'); document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock'; }
-    async function handleLogin() { 
-      const t = document.getElementById('loginToken').value.trim(); if(!t) return;
-      try {
-        const r = await fetch(API_URL, {headers: {Authorization: `token ${t}`}});
-        if(r.ok){ localStorage.setItem('gh_token_lashes', t); isLoggedIn=true; fileSha=(await r.json()).sha; closeAllModals(); openAdmin(); initAuth(); }
-        else document.getElementById('loginError').classList.remove('hidden');
-      } catch(e) { document.getElementById('loginError').classList.remove('hidden'); }
+    // ============== AUTENTICACIÓN ==============
+    function checkAuth() {
+      supabase.auth.onAuthStateChange((event, session) => {
+        isLoggedIn = !!session;
+        document.getElementById('navAdmin').querySelector('i').className = isLoggedIn ? 'fas fa-unlock' : 'fas fa-lock';
+      });
     }
-    function handleLogout() { localStorage.removeItem('gh_token_lashes'); isLoggedIn=false; initAuth(); closeAllModals(); }
 
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if(error) { document.getElementById('loginError').classList.remove('hidden'); console.error(error); }
+      else { closeAllModals(); openAdmin(); showToast('Bienvenida', 'success'); }
+    }
+
+    async function handleLogout() { 
+      await supabase.auth.signOut(); 
+      isLoggedIn=false; 
+      closeAllModals(); 
+    }
+
+    // ============== VISTAS PÚBLICAS ==============
     function renderHome() {
-      document.getElementById('salonTitle').textContent = storeData.salonName;
-      document.getElementById('salonAddress').textContent = storeData.address;
-      if(storeData.heroImage) document.getElementById('heroLogo').src = storeData.heroImage;
+      document.getElementById('salonTitle').textContent = storeData.salonName || 'Lashes Lashes';
+      document.getElementById('salonAddress').textContent = storeData.address || '';
+      if(storeData.logo_url) document.getElementById('heroLogo').src = storeData.logo_url;
       renderServices();
     }
 
     function filterMainCategory(cat) {
       currentMainCat = cat;
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-      
       document.getElementById('subCatPestanas').classList.add('hidden');
       document.getElementById('subCatManicura').classList.add('hidden');
       document.getElementById('notasManicura').classList.add('hidden');
-
-      if (cat === 'pestanas') {
-        document.getElementById('subCatPestanas').classList.remove('hidden');
-        activeFilter = currentPestanasSubCat;
-      } else if (cat === 'manicura') {
-        document.getElementById('subCatManicura').classList.remove('hidden');
-        document.getElementById('notasManicura').classList.remove('hidden');
-        activeFilter = currentManicuraSubCat;
-      } else {
-        activeFilter = cat; // Cejas, Pedicura, Faciales, Depilacion
-      }
+      if (cat === 'pestanas') { document.getElementById('subCatPestanas').classList.remove('hidden'); activeFilter = currentPestanasSubCat; }
+      else if (cat === 'manicura') { document.getElementById('subCatManicura').classList.remove('hidden'); document.getElementById('notasManicura').classList.remove('hidden'); activeFilter = currentManicuraSubCat; }
+      else { activeFilter = cat; }
       renderServices();
     }
 
     function filterSubCategory(subCat, type) {
-      if(type === 'pestanas') {
-        currentPestanasSubCat = subCat;
-        document.querySelectorAll('#subCatPestanas .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat));
-      } else if(type === 'manicura') {
-        currentManicuraSubCat = subCat;
-        document.querySelectorAll('#subCatManicura .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat));
-      }
+      if(type === 'pestanas') { currentPestanasSubCat = subCat; document.querySelectorAll('#subCatPestanas .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat)); }
+      else if(type === 'manicura') { currentManicuraSubCat = subCat; document.querySelectorAll('#subCatManicura .subcat-btn').forEach(b => b.classList.toggle('active', b.dataset.subcat === subCat)); }
       activeFilter = subCat;
       renderServices();
     }
 
     function setSort(type, origin) {
-      if(origin === 'admin') adminSortType = type;
-      else homeSortType = type;
-      
+      if(origin === 'admin') adminSortType = type; else homeSortType = type;
       document.querySelectorAll(`.sort-btn-${origin}`).forEach(b => b.classList.toggle('active', b.dataset.sort === type));
-      
-      if(origin === 'admin') renderAdminServices(document.getElementById('adminContent'));
-      else renderServices();
+      if(origin === 'admin') renderAdminServices(document.getElementById('adminContent')); else renderServices();
     }
 
-    function sortArray(arr, type) {
-      if(type === 'price') return arr.slice().sort((a, b) => a.price - b.price);
-      return arr.slice().sort((a, b) => a.name.localeCompare(b.name));
-    }
+    function sortArray(arr, type) { if(type === 'price') return arr.slice().sort((a, b) => a.price - b.price); return arr.slice().sort((a, b) => a.name.localeCompare(b.name)); }
 
     function renderServices() {
       const g = document.getElementById('servicesGrid');
       let filtered = storeData.services.filter(s => s.category === activeFilter);
       filtered = sortArray(filtered, homeSortType);
-
-      if (filtered.length === 0) {
-        g.innerHTML = `<div class="col-span-2 flex flex-col items-center justify-center py-12 text-center"><i class="fas fa-hourglass-half text-4xl text-sand mb-3"></i><h3 class="font-display text-2xl font-bold text-fuchsia mb-2">Muy Pronto</h3><p class="text-drift text-sm">Estamos preparando servicios increíbles para ti en esta categoría.</p></div>`;
-        return;
-      }
+      if (filtered.length === 0) { g.innerHTML = `<div class="col-span-2 flex flex-col items-center justify-center py-12 text-center"><i class="fas fa-hourglass-half text-4xl text-sand mb-3"></i><h3 class="font-display text-2xl font-bold text-fuchsia mb-2">Muy Pronto</h3><p class="text-drift text-sm">Estamos preparando servicios increíbles para ti.</p></div>`; return; }
       g.innerHTML = '';
       filtered.forEach(s => {
         const descHtml = s.description ? `<p class="text-[11px] text-gray-500 mb-2 leading-tight"><i class="fas fa-check-circle text-fuchsia mr-1"></i>${s.description}</p>` : '';
-        g.innerHTML += `
-        <div class="service-card shadow-md border border-sand/50 flex flex-col">
-          <img src="${s.image}" class="w-full h-36 object-cover">
-          <div class="p-3 flex-grow flex flex-col">
-            <h3 class="font-display text-sm font-bold leading-tight mb-1">${s.name}</h3>
-            <p class="text-xs text-drift mb-1"><i class="far fa-clock mr-1"></i>${s.duration || '60 min'}</p>
-            ${descHtml}
-            <p class="text-sm font-bold mt-auto" style="color:var(--accent)">$${s.price}</p>
-          </div>
-          <button onclick="addService(${s.id})" class="w-full py-2 text-white text-xs font-bold active:scale-95 transition" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i>Agregar</button>
-        </div>`;
+        g.innerHTML += `<div class="service-card shadow-md border border-sand/50 flex flex-col"><img src="${s.image_url || 'https://picsum.photos/seed/s'+s.id+'/400/400'}" class="w-full h-36 object-cover"><div class="p-3 flex-grow flex flex-col"><h3 class="font-display text-sm font-bold leading-tight mb-1">${s.name}</h3><p class="text-xs text-drift mb-1"><i class="far fa-clock mr-1"></i>${s.duration || '60 min'}</p>${descHtml}<p class="text-sm font-bold mt-auto" style="color:var(--accent)">$${s.price}</p></div><button onclick="addService(${s.id})" class="w-full py-2 text-white text-xs font-bold active:scale-95 transition" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i>Agregar</button></div>`;
       });
     }
 
@@ -318,20 +293,9 @@
       });
     }
 
-    function generateTimeSlots() {
-      const sel = document.getElementById('bookTime');
-      for(let h=9; h<18; h++) { const h12 = h > 12 ? h-12 : h; const ampm = h >= 12 ? 'PM' : 'AM'; sel.innerHTML += `<option value="${h}:00">${h12}:00 ${ampm}</option>`; sel.innerHTML += `<option value="${h}:30">${h12}:30 ${ampm}</option>`; }
-    }
+    function generateTimeSlots() { const sel = document.getElementById('bookTime'); for(let h=9; h<18; h++) { const h12 = h > 12 ? h-12 : h; const ampm = h >= 12 ? 'PM' : 'AM'; sel.innerHTML += `<option value="${h}:00">${h12}:00 ${ampm}</option>`; sel.innerHTML += `<option value="${h}:30">${h12}:30 ${ampm}</option>`; } }
 
-    function addService(id) { 
-      const s = storeData.services.find(x => x.id === id); 
-      if(!s) return; 
-      const e = bookingCart.find(x => x.id === id); 
-      if(e) e.qty++; 
-      else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, qty: 1}); 
-      updateBookingBadge(); showToast('Servicio añadido', 'success'); 
-    }
-    
+    function addService(id) { const s = storeData.services.find(x => x.id === id); if(!s) return; const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, qty: 1}); updateBookingBadge(); showToast('Servicio añadido', 'success'); }
     function removeService(id) { bookingCart = bookingCart.filter(x => x.id !== id); updateBookingBadge(); renderBooking(); }
     function updateBookingBadge() { const t = bookingCart.reduce((s,i)=>s+i.qty,0); const b = document.getElementById('bookingBadge'); if(t>0){b.textContent=t;b.classList.remove('hidden');}else b.classList.add('hidden'); }
 
@@ -339,11 +303,7 @@
       const list = document.getElementById('bookingList'), form = document.getElementById('bookingForm'), empty = document.getElementById('bookingEmpty');
       if(bookingCart.length===0){ list.style.display='none'; form.style.display='none'; empty.style.display='block'; return; }
       empty.style.display='none'; list.style.display='block'; form.style.display='block'; list.innerHTML=''; let total=0;
-      bookingCart.forEach(i => { 
-        total+=i.price*i.qty; 
-        const descHtml = i.description ? `<p class="text-[10px] text-drift"><i class="fas fa-check-circle mr-1"></i>${i.description}</p>` : '';
-        list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm"><div class="flex-1 mr-2"><h4 class="font-bold text-sm">${i.name}</h4>${descHtml}<p class="text-xs mt-1" style="color:var(--accent)">$${i.price} x ${i.qty}</p></div><div class="flex items-center gap-2"><button onclick="removeService(${i.id})" class="text-red-400"><i class="fas fa-trash text-xs"></i></button></div></div>`; 
-      });
+      bookingCart.forEach(i => { total+=i.price*i.qty; const descHtml = i.description ? `<p class="text-[10px] text-drift"><i class="fas fa-check-circle mr-1"></i>${i.description}</p>` : ''; list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm"><div class="flex-1 mr-2"><h4 class="font-bold text-sm">${i.name}</h4>${descHtml}<p class="text-xs mt-1" style="color:var(--accent)">$${i.price} x ${i.qty}</p></div><div class="flex items-center gap-2"><button onclick="removeService(${i.id})" class="text-red-400"><i class="fas fa-trash text-xs"></i></button></div></div>`; });
       document.getElementById('bookingTotal').innerHTML = `<span class="text-drift text-sm">Total:</span> <span style="color:var(--accent)">$${total}</span>`;
     }
 
@@ -352,42 +312,42 @@
       if(!name || !phone || !muni || !time) { showToast('Completa todo', 'error'); return; }
       let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📍 *Dirección:* ${muni}\n🕒 *Horario:* ${time}\n\n📋 *Servicios:*\n`;
       let total = 0;
-      bookingCart.forEach(i => { 
-        const sub = i.price * i.qty; total += sub; 
-        msg += `  • ${i.name} x${i.qty} - $${sub}\n`; 
-        if(i.description) msg += `    ✔️ _${i.description}_\n`; 
-      });
+      bookingCart.forEach(i => { const sub = i.price * i.qty; total += sub; msg += `  • ${i.name} x${i.qty} - $${sub}\n`; if(i.description) msg += `    ✔️ _${i.description}_\n`; });
       msg += `\n💰 *Total: $${total}*`;
       window.open(`https://wa.me/${(storeData.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
       bookingCart = []; updateBookingBadge(); renderBooking(); switchScreen('home');
     }
 
-    function switchScreen(s) {
-      document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
-      document.getElementById('screenHome').style.display = s==='home'?'block':'none';
-      document.getElementById('screenBooking').style.display = s==='booking'?'block':'none';
-      if(s==='home') document.getElementById('navHome').classList.add('active');
-      if(s==='booking'){ document.getElementById('navBooking').classList.add('active'); renderBooking(); }
-    }
-
+    function switchScreen(s) { document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active')); document.getElementById('screenHome').style.display = s==='home'?'block':'none'; document.getElementById('screenBooking').style.display = s==='booking'?'block':'none'; if(s==='home') document.getElementById('navHome').classList.add('active'); if(s==='booking'){ document.getElementById('navBooking').classList.add('active'); renderBooking(); } }
     function handleAdminClick() { isLoggedIn ? openAdmin() : openModal('loginModal'); }
     function openAdmin() { openModal('adminModal'); showAdminPage('info'); }
     function openModal(id) { document.getElementById(id).classList.add('visible'); }
     function closeAllModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('visible')); }
     let toastTimer; function showToast(m, t) { const e=document.getElementById('toast'); e.textContent=m; e.className='toast '+t; clearTimeout(toastTimer); setTimeout(()=>e.classList.add('show'),10); toastTimer=setTimeout(()=>e.classList.remove('show'),2500); }
 
-    function showAdminPage(pg) {
-      document.querySelectorAll('.admin-tab').forEach(b => { b.classList.toggle('bg-pink-900/30', b.dataset.page===pg); b.classList.toggle('text-pink-400', b.dataset.page===pg); b.classList.toggle('text-gray-300', b.dataset.page!==pg); });
-      const c = document.getElementById('adminContent');
-      if(pg==='info') renderAdminInfo(c); 
-      else if(pg==='services') renderAdminServices(c); 
-      else if(pg==='gallery') renderAdminGallery(c);
-    }
+    // ============== PANEL ADMIN ==============
+    function showAdminPage(pg) { document.querySelectorAll('.admin-tab').forEach(b => { b.classList.toggle('bg-pink-900/30', b.dataset.page===pg); b.classList.toggle('text-pink-400', b.dataset.page===pg); b.classList.toggle('text-gray-300', b.dataset.page!==pg); }); const c = document.getElementById('adminContent'); if(pg==='info') renderAdminInfo(c); else if(pg==='services') renderAdminServices(c); else if(pg==='gallery') renderAdminGallery(c); }
 
     function renderAdminInfo(el) {
-      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección / Slogan</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">URL Imagen Logo (Raw URL)</label><input id="ai_img" value="${storeData.heroImage||''}" class="admin-input"></div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
+      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección / Slogan</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Imagen Logo (Subir nueva)</label><input type="file" id="ai_file" accept="image/*" class="admin-input text-xs">${storeData.logo_url ? '<img src="'+storeData.logo_url+'" class="w-16 h-16 mt-2 rounded-lg object-cover">' : ''}</div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
     }
-    async function saveAdminInfo() { storeData.salonName=document.getElementById('ai_name').value; storeData.address=document.getElementById('ai_addr').value; storeData.phone=document.getElementById('ai_phone').value; storeData.heroImage=document.getElementById('ai_img').value; try{await saveData(); renderHome();}catch(e){} }
+
+    async function saveAdminInfo() {
+      showToast('Guardando...', 'info');
+      const file = document.getElementById('ai_file').files[0];
+      let logoUrl = storeData.logo_url;
+      if(file) { logoUrl = await uploadImage(file); }
+      
+      const { error } = await supabase.from('salon_info').update({
+        name: document.getElementById('ai_name').value,
+        address: document.getElementById('ai_addr').value,
+        phone: document.getElementById('ai_phone').value,
+        logo_url: logoUrl
+      }).eq('id', 1);
+
+      if(!error) { await fetchStoreData(); renderHome(); showAdminPage('info'); showToast('¡Guardado!', 'success'); }
+      else { showToast('Error al guardar', 'error'); console.error(error); }
+    }
 
     function renderAdminServices(el) {
       let tabsHtml = '<div class="flex gap-2 overflow-x-auto pb-2 mb-3 tabs-scroll">';
@@ -396,105 +356,90 @@
         tabsHtml += `<button onclick="filterAdminServices('${key}')" class="px-3 py-1.5 rounded-lg text-xs font-bold shrink-nowrap border ${isActive} whitespace-nowrap">${catNames[key]}</button>`;
       });
       tabsHtml += '</div>';
-
-      // Botones de ordenar admin
-      let sortHtml = `<div class="flex justify-end gap-2 mb-4">
-        <button onclick="setSort('alpha', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='alpha' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="alpha">A-Z</button>
-        <button onclick="setSort('price', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='price' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="price">Precio $</button>
-      </div>`;
+      let sortHtml = `<div class="flex justify-end gap-2 mb-4"><button onclick="setSort('alpha', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='alpha' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="alpha">A-Z</button><button onclick="setSort('price', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='price' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="price">Precio $</button></div>`;
 
       let filtered = storeData.services.filter(s => s.category === adminActiveCat);
       filtered = sortArray(filtered, adminSortType);
 
       let listHtml = '<div class="space-y-3">';
-      if (filtered.length === 0) {
-        listHtml += '<p class="text-center text-gray-500 text-sm py-4">No hay servicios aquí aún.</p>';
-      } else {
+      if (filtered.length === 0) { listHtml += '<p class="text-center text-gray-500 text-sm py-4">No hay servicios aquí aún.</p>'; } 
+      else {
         filtered.forEach(s => {
-          const originalIndex = storeData.services.indexOf(s);
           const descSnippet = s.description ? `<p class="text-gray-400 text-[10px] mt-1 truncate"><i class="fas fa-check-circle mr-1"></i>${s.description}</p>` : '';
-          listHtml += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center">
-            <img src="${s.image}" class="w-16 h-16 rounded-lg object-cover">
-            <div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p>${descSnippet}</div>
-            <div class="flex gap-1">
-              <button onclick="editService(${originalIndex})" class="text-blue-400 text-xs p-2"><i class="fas fa-pen"></i></button>
-              <button onclick="deleteService(${originalIndex})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button>
-            </div>
-          </div>`;
+          listHtml += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center"><img src="${s.image_url || 'https://picsum.photos/seed/s'+s.id+'/100/100'}" class="w-16 h-16 rounded-lg object-cover"><div class="flex-1"><h4 class="font-bold text-sm">${s.name}</h4><p class="text-pink-400 text-xs">$${s.price} | ${s.duration}</p>${descSnippet}</div><div class="flex gap-1"><button onclick="editService(${s.id})" class="text-blue-400 text-xs p-2"><i class="fas fa-pen"></i></button><button onclick="deleteService(${s.id})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button></div></div>`;
         });
       }
       listHtml += '</div>';
       listHtml += `<button onclick="renderServiceForm('${adminActiveCat}')" class="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i> Nuevo en ${catNames[adminActiveCat]}</button>`;
-      
       el.innerHTML = tabsHtml + sortHtml + listHtml;
     }
 
     function filterAdminServices(catId) { adminActiveCat = catId; renderAdminServices(document.getElementById('adminContent')); }
 
-    function renderServiceForm(preselectedCat = 'pestanas_relleno', editIndex = null) {
-      const s = editIndex !== null ? storeData.services[editIndex] : {};
-      const btnText = editIndex !== null ? 'Actualizar Servicio' : 'Guardar Servicio';
-      
+    function renderServiceForm(preselectedCat = 'pestanas_relleno', editId = null) {
+      const s = editId !== null ? storeData.services.find(x => x.id === editId) : {};
+      const btnText = editId !== null ? 'Actualizar Servicio' : 'Guardar Servicio';
       let optionsHtml = '';
-      Object.keys(catNames).forEach(key => {
-        const selected = key === (s.category || preselectedCat) ? 'selected' : '';
-        optionsHtml += `<option value="${key}" ${selected}>${catNames[key]}</option>`;
-      });
+      Object.keys(catNames).forEach(key => { const selected = key === (s.category || preselectedCat) ? 'selected' : ''; optionsHtml += `<option value="${key}" ${selected}>${catNames[key]}</option>`; });
 
       document.getElementById('adminContent').innerHTML = `
         <button onclick="showAdminPage('services')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button>
-        <h3 class="font-display text-lg font-bold mb-4">${editIndex !== null ? 'Editar' : 'Nuevo'} Servicio</h3>
+        <h3 class="font-display text-lg font-bold mb-4">${editId !== null ? 'Editar' : 'Nuevo'} Servicio</h3>
         <div class="space-y-3">
-          <input type="hidden" id="sv_editIndex" value="${editIndex !== null ? editIndex : ''}">
+          <input type="hidden" id="sv_editId" value="${editId !== null ? editId : ''}">
           <input id="sv_name" placeholder="Nombre del servicio" class="admin-input" value="${s.name || ''}">
           <input id="sv_price" type="number" placeholder="Precio" class="admin-input" value="${s.price || ''}">
           <input id="sv_dur" placeholder="Duración (Ej: 45 min)" class="admin-input" value="${s.duration || ''}">
           <select id="sv_cat" class="admin-input">${optionsHtml}</select>
           <textarea id="sv_desc" placeholder="¿Qué incluye? (Ej: Esmalte tradicional, limado, cutícula)" class="admin-input" rows="3">${s.description || ''}</textarea>
-          <input id="sv_img" placeholder="URL de imagen (GitHub Raw)" class="admin-input" value="${s.image || ''}">
+          <div><label class="block text-xs text-gray-400 mb-1">Imagen (Seleccionar archivo)</label><input type="file" id="sv_file" accept="image/*" class="admin-input text-xs">${s.image_url ? '<img src="'+s.image_url+'" class="w-16 h-16 mt-2 rounded-lg object-cover">' : ''}</div>
           <button onclick="saveService()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">${btnText}</button>
         </div>`;
     }
 
-    function editService(index) {
-      renderServiceForm(adminActiveCat, index);
-    }
+    function editService(id) { renderServiceForm(adminActiveCat, id); }
 
     async function saveService() {
-      const editIndex = document.getElementById('sv_editIndex').value;
-      const name=document.getElementById('sv_name').value, price=Number(document.getElementById('sv_price').value), duration=document.getElementById('sv_dur').value, category=document.getElementById('sv_cat').value, description=document.getElementById('sv_desc').value.trim(), image=document.getElementById('sv_img').value;
+      const editId = document.getElementById('sv_editId').value;
+      const name=document.getElementById('sv_name').value, price=Number(document.getElementById('sv_price').value), duration=document.getElementById('sv_dur').value, category=document.getElementById('sv_cat').value, description=document.getElementById('sv_desc').value.trim();
+      const file = document.getElementById('sv_file').files[0];
       
       if(!name||!price) { showToast('Pon nombre y precio', 'error'); return; }
+      showToast('Guardando...', 'info');
       
-      const serviceData = { name, price, duration: duration||'60 min', description, image: image||'https://picsum.photos/seed/s'+Date.now()+'/400/400', category };
+      let imageUrl = editId ? (storeData.services.find(x=>x.id==editId)||{}).image_url : '';
+      if(file) { imageUrl = await uploadImage(file); }
 
-      if (editIndex !== "") {
-        // Modo Edición
-        storeData.services[editIndex] = serviceData;
+      const serviceData = { name, price, duration: duration||'60 min', description, image_url: imageUrl || 'https://picsum.photos/seed/s'+Date.now()+'/400/400', category };
+
+      if (editId !== "") {
+        const { error } = await supabase.from('services').update(serviceData).eq('id', editId);
+        if(error) { showToast('Error al actualizar', 'error'); console.error(error); }
       } else {
-        // Modo Nuevo
-        serviceData.id = Date.now();
-        storeData.services.push(serviceData);
+        const { error } = await supabase.from('services').insert(serviceData);
+        if(error) { showToast('Error al crear', 'error'); console.error(error); }
       }
 
       adminActiveCat = category;
-      try{await saveData(); showAdminPage('services'); renderHome();}catch(e){}
+      await fetchStoreData(); showAdminPage('services'); renderHome(); showToast('¡Éxito!', 'success');
     }
     
-    async function deleteService(index) { 
+    async function deleteService(id) { 
       if(!confirm('¿Eliminar este servicio?')) return; 
-      storeData.services.splice(index,1); 
-      try{await saveData(); showAdminPage('services'); renderHome();}catch(e){} 
+      const service = storeData.services.find(x => x.id === id);
+      if(service) await deleteImage(service.image_url);
+      await supabase.from('services').delete().eq('id', id); 
+      await fetchStoreData(); showAdminPage('services'); renderHome(); showToast('Eliminado', 'success');
     }
 
     function renderAdminGallery(el) {
       let h = '<h3 class="font-display font-bold text-pink-400 mb-4">Galería de Trabajos</h3><div class="space-y-3">';
       if(storeData.gallery && storeData.gallery.length > 0) {
-        storeData.gallery.forEach((item, i) => {
+        storeData.gallery.forEach(item => {
           h += `<div class="bg-adminCard p-2 rounded-xl border border-gray-700 flex gap-3 items-center">`;
           if(item.type === 'video') h += `<i class="fas fa-video text-pink-400 text-lg ml-2"></i>`;
           else h += `<img src="${item.url}" class="w-14 h-14 rounded-lg object-cover">`;
-          h += `<div class="flex-1 text-xs text-gray-300 truncate">${item.url}</div><button onclick="deleteGalleryItem(${i})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button></div>`;
+          h += `<div class="flex-1 text-xs text-gray-300 truncate">${item.type}</div><button onclick="deleteGalleryItem(${item.id})" class="text-red-400 text-xs p-2"><i class="fas fa-trash"></i></button></div>`;
         });
       }
       h += `</div><button onclick="renderGalleryForm()" class="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i> Agregar Foto/Video</button>`;
@@ -502,20 +447,30 @@
     }
 
     function renderGalleryForm() {
-      document.getElementById('adminContent').innerHTML = `<button onclick="showAdminPage('gallery')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button><h3 class="font-display text-lg font-bold mb-4">Agregar a Galería</h3><div class="space-y-3"><input id="gal_url" placeholder="URL de la imagen o video (GitHub Raw)" class="admin-input"><select id="gal_type" class="admin-input"><option value="image">Imagen</option><option value="video">Video</option></select><button onclick="saveGalleryItem()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
+      document.getElementById('adminContent').innerHTML = `<button onclick="showAdminPage('gallery')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button><h3 class="font-display text-lg font-bold mb-4">Agregar a Galería</h3><div class="space-y-3"><div><label class="block text-xs text-gray-400 mb-1">Archivo (Foto o Video)</label><input type="file" id="gal_file" accept="image/*,video/*" class="admin-input text-xs"></div><select id="gal_type" class="admin-input"><option value="image">Imagen</option><option value="video">Video</option></select><button onclick="saveGalleryItem()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Subir y Guardar</button></div>`;
     }
 
     async function saveGalleryItem() {
-      const url = document.getElementById('gal_url').value.trim(); const type = document.getElementById('gal_type').value;
-      if(!url) { showToast('Pon la URL', 'error'); return; }
-      if(!storeData.gallery) storeData.gallery = [];
-      storeData.gallery.push({ id: Date.now(), url, type });
-      try{ await saveData(); showAdminPage('gallery'); renderGallery(); }catch(e){}
+      const file = document.getElementById('gal_file').files[0]; const type = document.getElementById('gal_type').value;
+      if(!file) { showToast('Selecciona un archivo', 'error'); return; }
+      showToast('Subiendo archivo...', 'info');
+      const url = await uploadImage(file);
+      if(url) {
+        const { error } = await supabase.from('gallery').insert({ url, type });
+        if(!error) { await fetchStoreData(); showAdminPage('gallery'); renderGallery(); showToast('¡Agregado!', 'success'); }
+        else { showToast('Error en BD', 'error'); console.error(error); }
+      }
     }
 
-    async function deleteGalleryItem(index) { if(!confirm('¿Eliminar de la galería?')) return; storeData.gallery.splice(index,1); try{await saveData(); showAdminPage('gallery'); renderGallery();}catch(e){} }
+    async function deleteGalleryItem(id) { 
+      if(!confirm('¿Eliminar de la galería?')) return; 
+      const item = storeData.gallery.find(x => x.id === id);
+      if(item) await deleteImage(item.url);
+      await supabase.from('gallery').delete().eq('id', id); 
+      await fetchStoreData(); showAdminPage('gallery'); renderGallery(); showToast('Eliminado', 'success');
+    }
 
-    document.addEventListener('DOMContentLoaded', () => { initAuth(); initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
+    document.addEventListener('DOMContentLoaded', () => { initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </html>
+    </html>
