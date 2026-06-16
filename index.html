@@ -47,9 +47,14 @@
     #galleryGrid .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
     #galleryGrid .gallery-item { position: relative; border-radius: 12px; overflow: hidden; }
     #galleryGrid .gallery-item img, #galleryGrid .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
-    /* Estilo para el ícono de play que se desvanece */
     #galleryGrid .play-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); color: white; font-size: 24px; pointer-events: none; transition: opacity 0.3s; }
     #galleryGrid .play-icon.hidden-play { opacity: 0; background: transparent; }
+    
+    .cat-btn { transition: all 0.2s; border: 2px solid transparent; }
+    .cat-btn.active { background: white; border-color: var(--accent); color: var(--accent); box-shadow: 0 4px 12px rgba(214, 51, 108, 0.15); }
+    .subcat-btn { transition: all 0.2s; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; }
+    .subcat-btn.active { background: var(--accent); color: white; }
+    .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -110,6 +115,7 @@
     </section>
   </main>
 
+  <!-- PANTALLA DE TURNO MODIFICADA CON DÍA Y HORA -->
   <div id="screenBooking" class="pb-24 px-4 pt-6" style="display:none;">
     <h2 class="font-display text-2xl font-bold mb-4">Reservar Turno</h2>
     <div id="bookingEmpty" class="text-center py-12"><i class="fas fa-calendar-xmark text-4xl text-sand mb-3"></i><p class="text-drift text-sm">No has seleccionado servicios</p></div>
@@ -118,7 +124,17 @@
       <div id="bookingTotal" class="text-right font-bold text-xl mb-2"></div>
       <input type="text" id="bookName" placeholder="Tu nombre completo" class="admin-input border-sand bg-white text-charcoal">
       <input type="tel" id="bookPhone" placeholder="Tu teléfono" class="admin-input border-sand bg-white text-charcoal">
-      <select id="bookTime" class="admin-input border-sand bg-white text-charcoal"><option value="">Selecciona el horario</option></select>
+      
+      <div>
+        <label class="block text-[11px] text-drift mb-1 ml-1 font-bold">Selecciona el día</label>
+        <input type="date" id="bookDate" class="admin-input border-sand bg-white text-charcoal">
+      </div>
+      
+      <div>
+        <label class="block text-[11px] text-drift mb-1 ml-1 font-bold">Selecciona la hora</label>
+        <select id="bookTime" class="admin-input border-sand bg-white text-charcoal"><option value="">Horario disponible</option></select>
+      </div>
+
       <button onclick="sendBooking()" class="w-full py-3 rounded-xl font-bold text-white text-base bg-green-600 active:scale-95 transition flex items-center justify-center gap-2"><i class="fab fa-whatsapp text-xl"></i> Reservar por WhatsApp</button>
     </div>
   </div>
@@ -172,6 +188,12 @@
       renderHome(); 
       generateTimeSlots(); 
       renderGallery();
+      setupDatePicker(); // Inicializar calendario
+    }
+
+    function setupDatePicker() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('bookDate').setAttribute('min', today);
     }
 
     async function fetchStoreData() {
@@ -284,14 +306,12 @@
       });
     }
 
-    // --- GALERÍA PÚBLICA (REPRODUCCIÓN INTELIGENTE) ---
     function renderGallery() {
       const grid = document.getElementById('galleryGrid'); const empty = document.getElementById('galleryEmpty');
       if(!storeData.gallery || storeData.gallery.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
       empty.classList.add('hidden'); grid.innerHTML = '';
       storeData.gallery.forEach(item => {
         if(item.type === 'video') {
-          // Nota: quitamos 'autoplay'. El observer lo hará iniciar.
           grid.innerHTML += `<div class="gallery-item"><video src="${item.url}" loop muted playsinline class="gallery-video"></video><div class="play-icon"><i class="fas fa-play"></i></div></div>`;
         }
         else grid.innerHTML += `<div class="gallery-item"><img src="${item.url}" alt="Trabajo realizado"></div>`;
@@ -306,24 +326,31 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           const video = entry.target;
-          const playIcon = video.nextElementSibling; // El ícono de play
+          const playIcon = video.nextElementSibling; 
           if (entry.isIntersecting) {
-            // El video está en pantalla: reproducir y ocultar ícono
             video.play().then(() => {
               if(playIcon) playIcon.classList.add('hidden-play');
             }).catch(err => console.log("Autoplay bloqueado por el navegador"));
           } else {
-            // El video salió de pantalla: pausar y mostrar ícono
             video.pause();
             if(playIcon) playIcon.classList.remove('hidden-play');
           }
         });
-      }, { threshold: 0.5 }); // Se activa cuando el 50% del video es visible
+      }, { threshold: 0.5 });
 
       videos.forEach(video => observer.observe(video));
     }
 
-    function generateTimeSlots() { const sel = document.getElementById('bookTime'); for(let h=9; h<18; h++) { const h12 = h > 12 ? h-12 : h; const ampm = h >= 12 ? 'PM' : 'AM'; sel.innerHTML += `<option value="${h}:00">${h12}:00 ${ampm}</option>`; sel.innerHTML += `<option value="${h}:30">${h12}:30 ${ampm}</option>`; } }
+    // HORARIOS EN FORMATO 12 HORAS
+    function generateTimeSlots() { 
+      const sel = document.getElementById('bookTime'); 
+      for(let h=9; h<18; h++) { 
+        const h12 = h > 12 ? h-12 : h; 
+        const ampm = h >= 12 ? 'PM' : 'AM'; 
+        sel.innerHTML += `<option value="${h12}:00 ${ampm}">${h12}:00 ${ampm}</option>`; 
+        sel.innerHTML += `<option value="${h12}:30 ${ampm}">${h12}:30 ${ampm}</option>`; 
+      } 
+    }
 
     function addService(id) { const s = storeData.services.find(x => x.id === id); if(!s) return; const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, qty: 1}); updateBookingBadge(); showToast('Servicio añadido', 'success'); }
     function removeService(id) { bookingCart = bookingCart.filter(x => x.id !== id); updateBookingBadge(); renderBooking(); }
@@ -338,9 +365,19 @@
     }
 
     function sendBooking() {
-      const name = document.getElementById('bookName').value.trim(), phone = document.getElementById('bookPhone').value.trim(), time = document.getElementById('bookTime').value;
-      if(!name || !phone || !time) { showToast('Completa todo', 'error'); return; }
-      let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n🕒 *Horario:* ${time}\n\n📋 *Servicios:*\n`;
+      const name = document.getElementById('bookName').value.trim(), 
+            phone = document.getElementById('bookPhone').value.trim(), 
+            dateRaw = document.getElementById('bookDate').value,
+            time = document.getElementById('bookTime').value;
+            
+      if(!name || !phone || !dateRaw || !time) { showToast('Completa todos los datos', 'error'); return; }
+      
+      // Formatear fecha para que se vea bonita en WhatsApp (Ej: lunes, 15 de mayo)
+      const dateObj = new Date(dateRaw + 'T00:00:00');
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      const formattedDate = dateObj.toLocaleDateString('es-ES', options);
+      
+      let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📅 *Día:* ${formattedDate}\n🕒 *Hora:* ${time}\n\n📋 *Servicios:*\n`;
       let total = 0;
       bookingCart.forEach(i => { const sub = i.price * i.qty; total += sub; msg += `  • ${i.name} x${i.qty} - $${sub}\n`; if(i.description) msg += `    ✔️ _${i.description}_\n`; });
       msg += `\n💰 *Total: $${total}*`;
@@ -511,4 +548,4 @@
     document.addEventListener('DOMContentLoaded', () => { initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-  </html>
+          </html>
