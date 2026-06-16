@@ -341,15 +341,15 @@
       videos.forEach(video => observer.observe(video));
     }
 
-    // HORARIOS EN FORMATO 12 HORAS
+    // HORARIOS MODIFICADOS: Solo 12 PM, 2 PM y 4 PM
     function generateTimeSlots() { 
       const sel = document.getElementById('bookTime'); 
-      for(let h=9; h<18; h++) { 
-        const h12 = h > 12 ? h-12 : h; 
-        const ampm = h >= 12 ? 'PM' : 'AM'; 
-        sel.innerHTML += `<option value="${h12}:00 ${ampm}">${h12}:00 ${ampm}</option>`; 
-        sel.innerHTML += `<option value="${h12}:30 ${ampm}">${h12}:30 ${ampm}</option>`; 
-      } 
+      sel.innerHTML = '<option value="">Horario disponible</option>';
+      
+      const fixedSlots = ['12:00 PM', '2:00 PM', '4:00 PM'];
+      fixedSlots.forEach(time => {
+        sel.innerHTML += `<option value="${time}">${time}</option>`;
+      });
     }
 
     function addService(id) { const s = storeData.services.find(x => x.id === id); if(!s) return; const e = bookingCart.find(x => x.id === id); if(e) e.qty++; else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, qty: 1}); updateBookingBadge(); showToast('Servicio añadido', 'success'); }
@@ -548,4 +548,4 @@
     document.addEventListener('DOMContentLoaded', () => { initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-          </html>
+  </html>
