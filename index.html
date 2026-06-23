@@ -55,6 +55,58 @@
     .subcat-btn { transition: all 0.2s; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; }
     .subcat-btn.active { background: var(--accent); color: white; }
     .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* ===== HERO CON FONDO DE SALÓN ===== */
+    .hero-wrapper {
+      position: relative;
+      overflow: hidden;
+      background: #1A1A1A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+    .hero-bg-zone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 65%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+    .hero-bg-zone::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(26,26,26,0.15) 0%,
+        rgba(26,26,26,0.5) 60%,
+        rgba(26,26,26,1) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding-top: 2.5rem;
+      padding-bottom: 2rem;
+    }
+    .hero-text-zone {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: auto;
+      position: relative;
+      z-index: 2;
+    }
   </style>
 </head>
 <body>
@@ -66,10 +118,16 @@
   </nav>
 
   <main id="screenHome" class="pb-24">
-    <div class="relative overflow-hidden bg-charcoal flex flex-col items-center justify-center p-6 pt-10 pb-8">
-      <img id="heroLogo" src="https://raw.githubusercontent.com/ecosdemoda/Lashes-cat-logo-/main/Logo%20lashes.png" alt="Lashes Lashes Logo" class="w-36 h-36 object-contain rounded-full shadow-lg border-4 border-white/10 mb-4 bg-white/10 p-1">
-      <h1 id="salonTitle" class="font-display text-3xl font-black text-white leading-tight text-center drop-shadow-md"></h1>
-      <div class="flex items-center gap-2 text-white/80 text-sm mt-2 drop-shadow-sm"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
+    <!-- HERO RECONSTRUIDO -->
+    <div class="hero-wrapper" id="heroSection">
+      <div class="hero-bg-zone" id="heroBg" style="display:none;"></div>
+      <div class="hero-content">
+        <img id="heroLogo" src="https://raw.githubusercontent.com/ecosdemoda/Lashes-cat-logo-/main/Logo%20lashes.png" alt="Lashes Lashes Logo" class="w-36 h-36 object-contain rounded-full shadow-lg border-4 border-white/10 mb-4 bg-white/10 p-1 relative z-10">
+        <div class="hero-text-zone">
+          <h1 id="salonTitle" class="font-display text-3xl font-black text-white leading-tight text-center drop-shadow-md"></h1>
+          <div class="flex items-center gap-2 text-white/80 text-sm mt-2 drop-shadow-sm"><i class="fas fa-map-marker-alt"></i><span id="salonAddress"></span></div>
+        </div>
+      </div>
     </div>
 
     <section class="px-4 py-6">
@@ -123,17 +181,14 @@
       <div id="bookingTotal" class="text-right font-bold text-xl mb-2"></div>
       <input type="text" id="bookName" placeholder="Tu nombre completo" class="admin-input border-sand bg-white text-charcoal">
       <input type="tel" id="bookPhone" placeholder="Tu teléfono" class="admin-input border-sand bg-white text-charcoal">
-      
       <div>
         <label class="block text-[11px] text-drift mb-1 ml-1 font-bold">Selecciona el día</label>
         <input type="date" id="bookDate" class="admin-input border-sand bg-white text-charcoal">
       </div>
-      
       <div>
         <label class="block text-[11px] text-drift mb-1 ml-1 font-bold">Selecciona la hora</label>
         <select id="bookTime" class="admin-input border-sand bg-white text-charcoal"><option value="">Horario disponible</option></select>
       </div>
-
       <button onclick="sendBooking()" class="w-full py-3 rounded-xl font-bold text-white text-base bg-green-600 active:scale-95 transition flex items-center justify-center gap-2"><i class="fab fa-whatsapp text-xl"></i> Reservar por WhatsApp</button>
     </div>
   </div>
@@ -158,13 +213,9 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmb21qeWFpdWluZ21keXN1dHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NjMyMDYsImV4cCI6MjA5NzAzOTIwNn0.itXgviHivbFUiocrAqJSyhFgufqJcvPIJratJIQM4nA';
     
     let supabaseClient;
-    try {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch(e) {
-        console.error("Error inicializando Supabase:", e);
-    }
+    try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e) { console.error("Error inicializando Supabase:", e); }
 
-    let storeData = { salonName: 'Lashes Lashes', address: 'La elegancia comienza por tu mirada', phone: '', services: [], gallery: [] };
+    let storeData = { salonName: 'Lashes Lashes', address: 'La elegancia comienza por tu mirada', phone: '', logo_url: '', hero_bg_url: '', services: [], gallery: [] };
     let isLoggedIn = false, bookingCart = [];
     
     let currentMainCat = 'pestanas';
@@ -181,7 +232,6 @@
       pedicura: "Pedicura", faciales: "Trat. Faciales", depilacion: "Depilación" 
     };
 
-    /* Etiquetas cortas para el WhatsApp */
     const catLabelsWA = {
       pestanas_nuevas: "🏷️ Tipo: Extensiones nuevas",
       pestanas_relleno: "🏷️ Tipo: Relleno de extensiones",
@@ -190,10 +240,7 @@
       manicura_extension: "🏷️ Tipo: Extensión Gel construcción"
     };
 
-    /* Devuelve la etiqueta de tipo solo para categorías que tienen subcategoría */
-    function getServiceTypeLabel(category) {
-      return catLabelsWA[category] || '';
-    }
+    function getServiceTypeLabel(category) { return catLabelsWA[category] || ''; }
 
     async function initApp() {
       checkAuth();
@@ -214,7 +261,13 @@
       try {
         const { data: info, error: err1 } = await supabaseClient.from('salon_info').select('*').eq('id', 1).single();
         if(err1) console.warn("Error salon_info:", err1.message);
-        if(info) { storeData.salonName = info.name; storeData.address = info.address; storeData.phone = info.phone; if(info.logo_url) storeData.logo_url = info.logo_url; }
+        if(info) { 
+          storeData.salonName = info.name; 
+          storeData.address = info.address; 
+          storeData.phone = info.phone; 
+          if(info.logo_url) storeData.logo_url = info.logo_url;
+          if(info.hero_bg_url) storeData.hero_bg_url = info.hero_bg_url;
+        }
         
         const { data: servs, error: err2 } = await supabaseClient.from('services').select('*').order('name', { ascending: true });
         if(err2) console.warn("Error services:", err2.message);
@@ -231,10 +284,8 @@
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `productos/${fileName}`;
-      
       const { data, error } = await supabaseClient.storage.from('imagenes').upload(filePath, file, { cacheControl: '3600', upsert: false });
       if (error) { showToast('Error subiendo imagen', 'error'); console.error(error); return null; }
-      
       const { data: publicUrlData } = supabaseClient.storage.from('imagenes').getPublicUrl(filePath);
       return publicUrlData.publicUrl;
     }
@@ -267,16 +318,22 @@
       else { closeAllModals(); openAdmin(); showToast('Bienvenida', 'success'); }
     }
 
-    async function handleLogout() { 
-      if(supabaseClient) await supabaseClient.auth.signOut(); 
-      isLoggedIn=false; 
-      closeAllModals(); 
-    }
+    async function handleLogout() { if(supabaseClient) await supabaseClient.auth.signOut(); isLoggedIn=false; closeAllModals(); }
 
+    /* ===== RENDER HOME CON FONDO ===== */
     function renderHome() {
       document.getElementById('salonTitle').textContent = storeData.salonName || 'Lashes Lashes';
       document.getElementById('salonAddress').textContent = storeData.address || '';
       if(storeData.logo_url) document.getElementById('heroLogo').src = storeData.logo_url;
+
+      const heroBg = document.getElementById('heroBg');
+      if(storeData.hero_bg_url) {
+        heroBg.style.backgroundImage = `url('${storeData.hero_bg_url}')`;
+        heroBg.style.display = 'block';
+      } else {
+        heroBg.style.display = 'none';
+      }
+
       renderServices();
     }
 
@@ -335,43 +392,34 @@
     function setupVideoObservers() {
       const videos = document.querySelectorAll('.gallery-video');
       if(videos.length === 0) return;
-
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           const video = entry.target;
           const playIcon = video.nextElementSibling; 
           if (entry.isIntersecting) {
-            video.play().then(() => {
-              if(playIcon) playIcon.classList.add('hidden-play');
-            }).catch(err => console.log("Autoplay bloqueado por el navegador"));
+            video.play().then(() => { if(playIcon) playIcon.classList.add('hidden-play'); }).catch(err => {});
           } else {
             video.pause();
             if(playIcon) playIcon.classList.remove('hidden-play');
           }
         });
       }, { threshold: 0.5 });
-
       videos.forEach(video => observer.observe(video));
     }
 
     function generateTimeSlots() { 
       const sel = document.getElementById('bookTime'); 
       sel.innerHTML = '<option value="">Horario disponible</option>';
-      const fixedSlots = ['12:00 PM', '2:00 PM', '4:00 PM'];
-      fixedSlots.forEach(time => {
-        sel.innerHTML += `<option value="${time}">${time}</option>`;
-      });
+      ['12:00 PM', '2:00 PM', '4:00 PM'].forEach(time => { sel.innerHTML += `<option value="${time}">${time}</option>`; });
     }
 
-    /* ===== CARRITO CON CATEGORÍA ===== */
     function addService(id) { 
       const s = storeData.services.find(x => x.id === id); 
       if(!s) return; 
       const e = bookingCart.find(x => x.id === id); 
       if(e) e.qty++; 
       else bookingCart.push({id: s.id, name: s.name, price: s.price, description: s.description, category: s.category, qty: 1}); 
-      updateBookingBadge(); 
-      showToast('Servicio añadido', 'success'); 
+      updateBookingBadge(); showToast('Servicio añadido', 'success'); 
     }
     function removeService(id) { bookingCart = bookingCart.filter(x => x.id !== id); updateBookingBadge(); renderBooking(); }
     function updateBookingBadge() { const t = bookingCart.reduce((s,i)=>s+i.qty,0); const b = document.getElementById('bookingBadge'); if(t>0){b.textContent=t;b.classList.remove('hidden');}else b.classList.add('hidden'); }
@@ -383,10 +431,8 @@
       bookingCart.forEach(i => { 
         total+=i.price*i.qty; 
         const descHtml = i.description ? `<p class="text-[10px] text-drift"><i class="fas fa-check-circle mr-1"></i>${i.description}</p>` : '';
-        /* Mostrar tipo de servicio si tiene subcategoría */
         const typeHtml = catNames[i.category] && !['cejas','pedicura','faciales','depilacion'].includes(i.category)
-          ? `<p class="text-[10px] font-bold" style="color:var(--accent)"><i class="fas fa-tag mr-1"></i>${catNames[i.category]}</p>` 
-          : '';
+          ? `<p class="text-[10px] font-bold" style="color:var(--accent)"><i class="fas fa-tag mr-1"></i>${catNames[i.category]}</p>` : '';
         list.innerHTML += `<div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm"><div class="flex-1 mr-2"><h4 class="font-bold text-sm">${i.name}</h4>${typeHtml}${descHtml}<p class="text-xs mt-1" style="color:var(--accent)">$${i.price} x ${i.qty}</p></div><div class="flex items-center gap-2"><button onclick="removeService(${i.id})" class="text-red-400"><i class="fas fa-trash text-xs"></i></button></div></div>`; 
       });
       document.getElementById('bookingTotal').innerHTML = `<span class="text-drift text-sm">Total:</span> <span style="color:var(--accent)">$${total}</span>`;
@@ -397,23 +443,16 @@
             phone = document.getElementById('bookPhone').value.trim(), 
             dateRaw = document.getElementById('bookDate').value,
             time = document.getElementById('bookTime').value;
-            
       if(!name || !phone || !dateRaw || !time) { showToast('Completa todos los datos', 'error'); return; }
-      
       const dateObj = new Date(dateRaw + 'T00:00:00');
-      const options = { weekday: 'long', day: 'numeric', month: 'long' };
-      const formattedDate = dateObj.toLocaleDateString('es-ES', options);
-      
+      const formattedDate = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
       let msg = `💅 *Reserva - ${storeData.salonName}*\n\n👤 *Cliente:* ${name}\n📞 *Teléfono:* ${phone}\n📅 *Día:* ${formattedDate}\n🕒 *Hora:* ${time}\n\n📋 *Servicios:*\n`;
       let total = 0;
       bookingCart.forEach(i => { 
-        const sub = i.price * i.qty; 
-        total += sub; 
+        const sub = i.price * i.qty; total += sub; 
         msg += `\n  • ${i.name} x${i.qty} - $${sub}\n`; 
-        /* Tipo de servicio: nuevo/relleno en pestañas, tipo de uña en manicura */
         const typeLabel = getServiceTypeLabel(i.category);
         if(typeLabel) msg += `    ${typeLabel}\n`;
-        /* Descripción del servicio */
         if(i.description) msg += `    ✔️ _${i.description}_\n`; 
       });
       msg += `\n💰 *Total: $${total}*`;
@@ -430,25 +469,85 @@
 
     function showAdminPage(pg) { document.querySelectorAll('.admin-tab').forEach(b => { b.classList.toggle('bg-pink-900/30', b.dataset.page===pg); b.classList.toggle('text-pink-400', b.dataset.page===pg); b.classList.toggle('text-gray-300', b.dataset.page!==pg); }); const c = document.getElementById('adminContent'); if(pg==='info') renderAdminInfo(c); else if(pg==='services') renderAdminServices(c); else if(pg==='gallery') renderAdminGallery(c); }
 
+    /* ===== ADMIN INFO CON CAMPO DE FONDO ===== */
     function renderAdminInfo(el) {
-      el.innerHTML = `<div class="space-y-4"><h3 class="font-display font-bold text-pink-400">Información del Salón</h3><div><label class="block text-xs text-gray-400 mb-1">Nombre</label><input id="ai_name" value="${storeData.salonName||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Dirección / Slogan</label><input id="ai_addr" value="${storeData.address||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label><input id="ai_phone" value="${storeData.phone||''}" class="admin-input"></div><div><label class="block text-xs text-gray-400 mb-1">Imagen Logo (Subir nueva)</label><input type="file" id="ai_file" accept="image/*" class="admin-input text-xs">${storeData.logo_url ? '<img src="'+storeData.logo_url+'" class="w-16 h-16 mt-2 rounded-lg object-cover">' : ''}</div><button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar</button></div>`;
+      const hasHeroBg = storeData.hero_bg_url ? true : false;
+      el.innerHTML = `<div class="space-y-4">
+        <h3 class="font-display font-bold text-pink-400">Información del Salón</h3>
+        
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Nombre</label>
+          <input id="ai_name" value="${storeData.salonName||''}" class="admin-input">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Dirección / Slogan</label>
+          <input id="ai_addr" value="${storeData.address||''}" class="admin-input">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">WhatsApp (solo números)</label>
+          <input id="ai_phone" value="${storeData.phone||''}" class="admin-input">
+        </div>
+        
+        <div class="border border-gray-700 rounded-xl p-4 space-y-3">
+          <h4 class="text-sm font-bold text-pink-400 flex items-center gap-2"><i class="fas fa-image"></i> Logo del salón</h4>
+          <input type="file" id="ai_file" accept="image/*" class="admin-input text-xs">
+          ${storeData.logo_url ? '<img src="'+storeData.logo_url+'" class="w-16 h-16 mt-1 rounded-lg object-cover border border-gray-600">' : '<p class="text-gray-500 text-xs">No hay logo cargado</p>'}
+        </div>
+
+        <div class="border border-gray-700 rounded-xl p-4 space-y-3">
+          <h4 class="text-sm font-bold text-pink-400 flex items-center gap-2"><i class="fas fa-panorama"></i> Foto de fondo del inicio</h4>
+          <p class="text-[11px] text-gray-400">Esta imagen se muestra detrás del logo en la página principal. La zona del nombre y dirección queda limpia sin imagen.</p>
+          <input type="file" id="ai_herobg" accept="image/*" class="admin-input text-xs">
+          ${hasHeroBg ? `
+            <div class="relative mt-1">
+              <img src="${storeData.hero_bg_url}" class="w-full h-40 rounded-lg object-cover border border-gray-600">
+              <button type="button" onclick="removeHeroBg()" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-full font-bold transition"><i class="fas fa-trash mr-1"></i>Quitar</button>
+            </div>
+          ` : '<p class="text-gray-500 text-xs">No hay imagen de fondo</p>'}
+        </div>
+
+        <button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar todo</button>
+      </div>`;
+    }
+
+    /* Quitar solo la imagen de fondo sin guardar el resto */
+    function removeHeroBg() {
+      storeData.hero_bg_url = '';
+      renderAdminInfo(document.getElementById('adminContent'));
     }
 
     async function saveAdminInfo() {
       showToast('Guardando...', 'info');
-      const file = document.getElementById('ai_file').files[0];
-      let logoUrl = storeData.logo_url;
-      if(file) { logoUrl = await uploadImage(file); }
       
+      const logoFile = document.getElementById('ai_file').files[0];
+      const heroBgFile = document.getElementById('ai_herobg').files[0];
+      
+      let logoUrl = storeData.logo_url;
+      let heroBgUrl = storeData.hero_bg_url;
+
+      /* Subir logo si seleccionó nuevo */
+      if(logoFile) { logoUrl = await uploadImage(logoFile); }
+
+      /* Subir fondo si seleccionó nuevo */
+      if(heroBgFile) { heroBgUrl = await uploadImage(heroBgFile); }
+
       const { error } = await supabaseClient.from('salon_info').update({
         name: document.getElementById('ai_name').value,
         address: document.getElementById('ai_addr').value,
         phone: document.getElementById('ai_phone').value,
-        logo_url: logoUrl
+        logo_url: logoUrl,
+        hero_bg_url: heroBgUrl || null
       }).eq('id', 1);
 
-      if(!error) { await fetchStoreData(); renderHome(); showAdminPage('info'); showToast('¡Guardado!', 'success'); }
-      else { showToast('Error al guardar', 'error'); console.error(error); }
+      if(!error) { 
+        await fetchStoreData(); 
+        renderHome(); 
+        showAdminPage('info'); 
+        showToast('¡Guardado!', 'success'); 
+      } else { 
+        showToast('Error al guardar', 'error'); 
+        console.error(error); 
+      }
     }
 
     function renderAdminServices(el) {
@@ -459,10 +558,8 @@
       });
       tabsHtml += '</div>';
       let sortHtml = `<div class="flex justify-end gap-2 mb-4"><button onclick="setSort('alpha', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='alpha' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="alpha">A-Z</button><button onclick="setSort('price', 'admin')" class="sort-btn-admin text-[11px] px-3 py-1 rounded-full border ${adminSortType==='price' ? 'border-pink-400 bg-pink-900/50 text-pink-400' : 'border-gray-600 bg-adminCard text-gray-300'} font-bold transition" data-sort="price">Precio $</button></div>`;
-
       let filtered = storeData.services.filter(s => s.category === adminActiveCat);
       filtered = sortArray(filtered, adminSortType);
-
       let listHtml = '<div class="space-y-3">';
       if (filtered.length === 0) { listHtml += '<p class="text-center text-gray-500 text-sm py-4">No hay servicios aquí aún.</p>'; } 
       else {
@@ -483,7 +580,6 @@
       const btnText = editId !== null ? 'Actualizar Servicio' : 'Guardar Servicio';
       let optionsHtml = '';
       Object.keys(catNames).forEach(key => { const selected = key === (s.category || preselectedCat) ? 'selected' : ''; optionsHtml += `<option value="${key}" ${selected}>${catNames[key]}</option>`; });
-
       document.getElementById('adminContent').innerHTML = `
         <button onclick="showAdminPage('services')" class="text-drift hover:text-white mb-4 inline-flex gap-2 text-sm"><i class="fas fa-arrow-left"></i> Volver</button>
         <h3 class="font-display text-lg font-bold mb-4">${editId !== null ? 'Editar' : 'Nuevo'} Servicio</h3>
@@ -505,15 +601,11 @@
       const editId = document.getElementById('sv_editId').value;
       const name=document.getElementById('sv_name').value, price=Number(document.getElementById('sv_price').value), duration=document.getElementById('sv_dur').value, category=document.getElementById('sv_cat').value, description=document.getElementById('sv_desc').value.trim();
       const file = document.getElementById('sv_file').files[0];
-      
       if(!name||!price) { showToast('Pon nombre y precio', 'error'); return; }
       showToast('Guardando...', 'info');
-      
       let imageUrl = editId ? (storeData.services.find(x=>x.id==editId)||{}).image_url : '';
       if(file) { imageUrl = await uploadImage(file); }
-
       const serviceData = { name, price, duration: duration||'60 min', description, image_url: imageUrl || 'https://picsum.photos/seed/s'+Date.now()+'/400/400', category };
-
       if (editId !== "") {
         const { error } = await supabaseClient.from('services').update(serviceData).eq('id', editId);
         if(error) { showToast('Error al actualizar', 'error'); console.error(error); }
@@ -521,7 +613,6 @@
         const { error } = await supabaseClient.from('services').insert(serviceData);
         if(error) { showToast('Error al crear', 'error'); console.error(error); }
       }
-
       adminActiveCat = category;
       await fetchStoreData(); showAdminPage('services'); renderHome(); showToast('¡Éxito!', 'success');
     }
@@ -541,15 +632,7 @@
           const displayName = item.name || 'Archivo sin nombre'; 
           const icon = item.type === 'video' ? 'fa-video' : 'fa-image';
           const preview = item.type === 'video' ? `<div class="w-20 h-20 rounded-lg bg-adminCard flex items-center justify-center shrink-0"><i class="fas ${icon} text-pink-400 text-2xl"></i></div>` : `<img src="${item.url}" class="w-20 h-20 rounded-lg object-cover shrink-0">`;
-          
-          h += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center">
-            ${preview}
-            <div class="flex-1 overflow-hidden">
-              <p class="text-sm font-bold text-white truncate">${displayName}</p>
-              <p class="text-[10px] text-gray-500 uppercase">${item.type}</p>
-            </div>
-            <button onclick="deleteGalleryItem(${item.id})" class="text-red-400 text-lg p-2 shrink-0 hover:bg-red-900/30 rounded-lg"><i class="fas fa-trash"></i></button>
-          </div>`;
+          h += `<div class="bg-adminCard p-3 rounded-xl border border-gray-700 flex gap-3 items-center">${preview}<div class="flex-1 overflow-hidden"><p class="text-sm font-bold text-white truncate">${displayName}</p><p class="text-[10px] text-gray-500 uppercase">${item.type}</p></div><button onclick="deleteGalleryItem(${item.id})" class="text-red-400 text-lg p-2 shrink-0 hover:bg-red-900/30 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
         });
       }
       h += `</div><button onclick="renderGalleryForm()" class="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)"><i class="fas fa-plus mr-1"></i> Agregar Foto/Video</button>`;
@@ -566,8 +649,7 @@
       showToast('Subiendo archivo...', 'info');
       const url = await uploadImage(file);
       if(url) {
-        const originalName = file.name;
-        const { error } = await supabaseClient.from('gallery').insert({ url, type, name: originalName });
+        const { error } = await supabaseClient.from('gallery').insert({ url, type, name: file.name });
         if(!error) { await fetchStoreData(); showAdminPage('gallery'); renderGallery(); showToast('¡Agregado!', 'success'); }
         else { showToast('Error en BD', 'error'); console.error(error); }
       }
