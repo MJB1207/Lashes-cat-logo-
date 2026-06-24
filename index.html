@@ -56,64 +56,12 @@
     .subcat-btn { transition: all 0.2s; border: 1.5px solid var(--accent); color: var(--accent); background: transparent; }
     .subcat-btn.active { background: var(--accent); color: white; }
     .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-    /* ===== HERO ===== */
-    .hero-wrapper {
-      position: relative;
-      overflow: hidden;
-      background: #1A1A1A;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .hero-bg-zone {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      z-index: 0;
-    }
-    /* Sin difuminado — la imagen se ve completa */
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      padding: 2.5rem 1.5rem 2rem;
-    }
-    /* Logo: círculo perfecto con la imagen ajustada */
-    .hero-logo-circle {
-      width: 9rem;
-      height: 9rem;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 4px solid rgba(255,255,255,0.15);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      background: rgba(255,255,255,0.08);
-      flex-shrink: 0;
-      margin-bottom: 1rem;
-    }
-    .hero-logo-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .hero-text-zone {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: auto;
-      position: relative;
-      z-index: 2;
-    }
+    .hero-wrapper { position: relative; overflow: hidden; background: #1A1A1A; display: flex; flex-direction: column; align-items: center; }
+    .hero-bg-zone { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; }
+    .hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 2.5rem 1.5rem 2rem; }
+    .hero-logo-circle { width: 9rem; height: 9rem; border-radius: 50%; overflow: hidden; border: 4px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.4); background: rgba(255,255,255,0.08); flex-shrink: 0; margin-bottom: 1rem; }
+    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-text-zone { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: auto; position: relative; z-index: 2; }
   </style>
 </head>
 <body>
@@ -205,6 +153,7 @@
   <div id="toast" class="toast"></div>
 
   <script>
+    const DEFAULT_LOGO = 'https://raw.githubusercontent.com/ecosdemoda/Lashes-cat-logo-/main/Logo%20lashes.png';
     const SUPABASE_URL = 'https://ffomjyaiuingmdysutrw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmb21qeWFpdWluZ21keXN1dHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NjMyMDYsImV4cCI6MjA5NzAzOTIwNn0.itXgviHivbFUiocrAqJSyhFgufqJcvPIJratJIQM4nA';
     
@@ -316,10 +265,16 @@
 
     async function handleLogout() { if(supabaseClient) await supabaseClient.auth.signOut(); isLoggedIn=false; closeAllModals(); }
 
+    /* Saber si el logo actual es el default o uno subido */
+    function isDefaultLogo() {
+      return !storeData.logo_url || storeData.logo_url === DEFAULT_LOGO;
+    }
+
     function renderHome() {
       document.getElementById('salonTitle').textContent = storeData.salonName || 'Lashes Lashes';
       document.getElementById('salonAddress').textContent = storeData.address || '';
-      if(storeData.logo_url) document.getElementById('heroLogo').src = storeData.logo_url;
+      /* Mostrar el logo subido si existe, sino el default */
+      document.getElementById('heroLogo').src = storeData.logo_url || DEFAULT_LOGO;
       const heroBg = document.getElementById('heroBg');
       if(storeData.hero_bg_url) {
         heroBg.style.backgroundImage = `url('${storeData.hero_bg_url}')`;
@@ -442,8 +397,10 @@
 
     function showAdminPage(pg) { document.querySelectorAll('.admin-tab').forEach(b => { b.classList.toggle('bg-pink-900/30', b.dataset.page===pg); b.classList.toggle('text-pink-400', b.dataset.page===pg); b.classList.toggle('text-gray-300', b.dataset.page!==pg); }); const c = document.getElementById('adminContent'); if(pg==='info') renderAdminInfo(c); else if(pg==='services') renderAdminServices(c); else if(pg==='gallery') renderAdminGallery(c); }
 
+    /* ===== ADMIN INFO ===== */
     function renderAdminInfo(el) {
       const hasHeroBg = storeData.hero_bg_url ? true : false;
+      const hasCustomLogo = !isDefaultLogo();
       const columnWarn = !heroBgColumnExists ? `
         <div class="bg-yellow-900/30 border border-yellow-600/50 rounded-xl p-4 text-sm space-y-2">
           <p class="font-bold text-yellow-400 flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> Falta una columna en la base de datos</p>
@@ -451,6 +408,19 @@
           <p class="text-yellow-200/60 text-[11px]">Ve a Supabase → SQL Editor y ejecutá:</p>
           <pre class="bg-black/50 rounded-lg p-3 text-[11px] text-green-400 overflow-x-auto mt-1">ALTER TABLE salon_info\nADD COLUMN hero_bg_url TEXT;</pre>
         </div>` : '';
+
+      /* Vista previa del logo */
+      let logoPreviewHtml;
+      if(hasCustomLogo) {
+        logoPreviewHtml = `<div class="relative mt-2 inline-block">
+          <img src="${storeData.logo_url}" class="w-20 h-20 rounded-full object-cover border-2 border-gray-600">
+          <button type="button" onclick="removeLogo()" class="absolute -top-1.5 -right-1.5 bg-red-600 hover:bg-red-700 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition shadow-lg"><i class="fas fa-times"></i></button>
+        </div>
+        <p class="text-[10px] text-gray-400 mt-1">Logo personalizado activo — toqué la X para volver al original</p>`;
+      } else {
+        logoPreviewHtml = `<img src="${DEFAULT_LOGO}" class="w-20 h-20 rounded-full object-cover border-2 border-gray-600 mt-2">
+        <p class="text-[10px] text-gray-500 mt-1">Mostrando logo original</p>`;
+      }
 
       el.innerHTML = `<div class="space-y-4">
         <h3 class="font-display font-bold text-pink-400">Información del Salón</h3>
@@ -461,7 +431,7 @@
         <div class="border border-gray-700 rounded-xl p-4 space-y-3">
           <h4 class="text-sm font-bold text-pink-400 flex items-center gap-2"><i class="fas fa-image"></i> Logo del salón</h4>
           <input type="file" id="ai_file" accept="image/*" class="admin-input text-xs">
-          ${storeData.logo_url ? '<img src="'+storeData.logo_url+'" class="w-16 h-16 mt-1 rounded-lg object-cover border border-gray-600">' : '<p class="text-gray-500 text-xs">No hay logo cargado</p>'}
+          ${logoPreviewHtml}
         </div>
         <div class="border border-gray-700 rounded-xl p-4 space-y-3 ${!heroBgColumnExists ? 'opacity-50 pointer-events-none' : ''}">
           <h4 class="text-sm font-bold text-pink-400 flex items-center gap-2"><i class="fas fa-panorama"></i> Foto de fondo del inicio</h4>
@@ -472,6 +442,28 @@
         </div>
         <button onclick="saveAdminInfo()" class="w-full py-3 rounded-xl font-bold text-white text-sm" style="background:var(--accent)">Guardar todo</button>
       </div>`;
+    }
+
+    /* Quitar logo personalizado y volver al original — se guarda enseguida */
+    async function removeLogo() {
+      const oldUrl = storeData.logo_url;
+      storeData.logo_url = '';
+      
+      /* Eliminar la imagen del storage */
+      if(oldUrl && oldUrl !== DEFAULT_LOGO) await deleteImage(oldUrl);
+      
+      /* Guardar en BD */
+      const { error } = await supabaseClient.from('salon_info').update({ logo_url: '' }).eq('id', 1);
+      if(error) {
+        storeData.logo_url = oldUrl;
+        showToast('Error al quitar el logo', 'error');
+        console.error(error);
+        return;
+      }
+      
+      renderHome();
+      renderAdminInfo(document.getElementById('adminContent'));
+      showToast('Logo restaurado al original', 'success');
     }
 
     function removeHeroBg() {
@@ -492,7 +484,7 @@
         name: document.getElementById('ai_name').value,
         address: document.getElementById('ai_addr').value,
         phone: document.getElementById('ai_phone').value,
-        logo_url: logoUrl
+        logo_url: logoUrl || ''
       };
 
       if(heroBgColumnExists) {
@@ -619,4 +611,4 @@
     document.addEventListener('DOMContentLoaded', () => { initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-  </html>
+                                                                                                                                                                                      </html>
