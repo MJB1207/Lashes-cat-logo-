@@ -92,7 +92,7 @@
       <div class="hero-bg-zone" id="heroBg" style="display:none;"></div>
       <div class="hero-content">
         <div class="hero-logo-circle">
-          <!-- CAMBIO 1 REALIZADO AQUÍ: ecosdemoda CAMBIADO A MJB1207 -->
+          <!-- CAMBIO 1 REALIZADO AQUÍ -->
           <img id="heroLogo" src="https://raw.githubusercontent.com/MJB1207/Lashes-cat-logo-/main/Logo%20lashes.png" alt="Lashes Lashes Logo">
         </div>
         <div class="hero-text-zone">
@@ -169,7 +169,7 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // CAMBIO 2 REALIZADO AQUÍ: ecosdemoda CAMBIADO A MJB1207
+    // CAMBIO 2 REALIZADO AQUÍ
     const DEFAULT_LOGO = 'https://raw.githubusercontent.com/MJB1207/Lashes-cat-logo-/main/Logo%20lashes.png';
     const SUPABASE_URL = 'https://ffomjyaiuingmdysutrw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmb21qeWFpdWluZ21keXN1dHJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NjMyMDYsImV4cCI6MjA5NzAzOTIwNn0.itXgviHivbFUiocrAqJSyhFgufqJcvPIJratJIQM4nA';
@@ -580,7 +580,7 @@
       const { error } = editId !== "" ? await supabaseClient.from('services').update(d).eq('id', editId) : await supabaseClient.from('services').insert(d);
       if(error) { showToast('Error: ' + error.message, 'error'); console.error(error); return; }
       adminActiveCat = category;
-      await fetchData(); showAdminPage('services'); renderHome(); showToast('¡Éxito!', 'success');
+      await fetchStoreData(); showAdminPage('services'); renderHome(); showToast('¡Éxito!', 'success');
     }
     
     async function deleteService(id) { 
@@ -628,4 +628,4 @@
     document.addEventListener('DOMContentLoaded', () => { initApp(); document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if(e.target===o) closeAllModals(); })); });
   </script>
 </body>
-                                                                                    </html>
+  </html>
